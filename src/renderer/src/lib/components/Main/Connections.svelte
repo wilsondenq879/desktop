@@ -15,11 +15,7 @@
     activeConnectionName?: string
   }
 
-  let {
-    onOpenSettings,
-    sidebarOpen,
-    activeConnectionName = $bindable('')
-  }: Props = $props()
+  let { onOpenSettings, sidebarOpen, activeConnectionName = $bindable('') }: Props = $props()
 
   let isLocalConnection = $state(false)
   let showingLogs = $state(false)
@@ -50,9 +46,15 @@
   const serverReachable = $derived($serverInfo?.reachable)
 
   const isInitializing = $derived($appState === 'initializing')
-  const localConn = $derived(localInstalled
-    ? { id: 'local', name: 'Open WebUI', type: 'local' as const, url: `http://127.0.0.1:${$config?.localServer?.port ?? 8080}` }
-    : null
+  const localConn = $derived(
+    localInstalled
+      ? {
+          id: 'local',
+          name: 'Open WebUI',
+          type: 'local' as const,
+          url: `http://127.0.0.1:${$config?.localServer?.port ?? 8080}`
+        }
+      : null
   )
   const remoteConnections = $derived($connections ?? [])
 
@@ -60,13 +62,29 @@
   let openTerminalStatus = $state<string | null>(null)
   let openTerminalInfo = $state<{ url?: string; apiKey?: string } | null>(null)
 
+  // Per-chat project folder state. The source of truth is persisted in the
+  // main process; this renderer state only reflects the active chat.
+  let chatIds: Record<string, string> = $state({})
+  let projectFolder = $state<string | null>(null)
+  let projectBusy = $state(false)
+  let projectMessage = $state('')
+  let projectError = $state('')
+  let projectRequestId = 0
+  let applyingProjectKeys: string[] = []
+  const activeChatId = $derived(chatIds[activeConnectionId] ?? '')
+  const projectControlsVisible = $derived(view === 'connected' && !!activeConnectionId)
+
   // Llama Server state
   let llamaCppStatus = $state<string | null>(null)
   let llamaCppInfo = $state<{ url?: string; pid?: number } | null>(null)
   let llamaCppSetupStatus = $state('')
   let openTerminalSetupStatus = $state('')
 
-  const startInstall = async (options?: { installOpenTerminal?: boolean; installLlamaCpp?: boolean; installDir?: string }) => {
+  const startInstall = async (options?: {
+    installOpenTerminal?: boolean
+    installLlamaCpp?: boolean
+    installDir?: string
+  }) => {
     installPhase = 'working'
     installError = ''
     installStatus = ''
@@ -85,7 +103,9 @@
       const disk = await window.electronAPI.getDiskSpace()
       if (disk?.free >= 0 && disk.free < MINIMUM_DISK_BYTES) {
         const availableGB = (disk.free / (1024 * 1024 * 1024)).toFixed(1)
-        throw new Error(`Not enough disk space. At least 5 GB is required (${availableGB} GB available).`)
+        throw new Error(
+          `Not enough disk space. At least 5 GB is required (${availableGB} GB available).`
+        )
       }
 
       // Ensure Python and uv are installed before attempting package install
@@ -143,7 +163,9 @@
       installError = e?.message || $i18n.t('error.somethingWentWrong')
       toastVisible = true
       if (toastTimeout) clearTimeout(toastTimeout)
-      toastTimeout = setTimeout(() => { toastVisible = false }, 5000)
+      toastTimeout = setTimeout(() => {
+        toastVisible = false
+      }, 5000)
     }
   }
 
@@ -333,6 +355,125 @@
     activeLog = activeLog === log ? null : (log as typeof activeLog)
   }
 
+  const extractChatId = (pageUrl: string): string => {
+    try {
+      const match = new URL(pageUrl).pathname.match(/^\/c\/([^/?#]+)/)
+      return match?.[1] ? decodeURIComponent(match[1]) : ''
+    } catch {
+      return ''
+    }
+  }
+
+  const reloadConnectionWebview = (connectionId: string) => {
+    const webview = document.querySelector(
+      `webview[partition="persist:connection-${connectionId}"]`
+    ) as any
+    webview?.reload?.()
+  }
+
+  const refreshProjectFolder = async (connectionId: string, chatId: string) => {
+    const requestId = ++projectRequestId
+    projectMessage = ''
+    projectError = ''
+
+    if (!connectionId || !chatId) {
+      projectFolder = null
+      return
+    }
+
+    const folder = await window.electronAPI.getOpenTerminalProjectFolder(connectionId, chatId)
+    if (requestId !== projectRequestId) return
+    projectFolder = folder
+    if (!folder) return
+
+    const key = `${connectionId}:${chatId}`
+    if (applyingProjectKeys.includes(key)) return
+    applyingProjectKeys.push(key)
+    projectBusy = true
+    try {
+      const result = await window.electronAPI.applyOpenTerminalProjectFolder({
+        connectionId,
+        chatId,
+        connectionUrl: openConnections.get(connectionId) ?? ''
+      })
+      if (requestId !== projectRequestId) return
+      projectFolder = result?.path ?? folder
+      if (result?.warning) projectError = result.warning
+      else projectMessage = $i18n.t('statusBar.projectReady')
+      if (result?.directConnectionChanged) reloadConnectionWebview(connectionId)
+    } catch (error: any) {
+      if (requestId === projectRequestId) {
+        projectError = error?.message ?? $i18n.t('statusBar.projectError')
+      }
+    } finally {
+      applyingProjectKeys = applyingProjectKeys.filter((item) => item !== key)
+      if (requestId === projectRequestId) projectBusy = false
+    }
+  }
+
+  const handleNavigationChange = (connectionId: string, pageUrl: string) => {
+    const chatId = extractChatId(pageUrl)
+    const previous = chatIds[connectionId] ?? ''
+    if (previous === chatId) return
+
+    if (chatId) chatIds[connectionId] = chatId
+    else delete chatIds[connectionId]
+    chatIds = { ...chatIds }
+
+    if (connectionId === activeConnectionId) {
+      void refreshProjectFolder(connectionId, chatId)
+    }
+  }
+
+  const chooseProjectFolder = async () => {
+    if (!activeConnectionId || !activeChatId || projectBusy) return
+    projectBusy = true
+    projectMessage = $i18n.t('statusBar.projectConnecting')
+    projectError = ''
+    try {
+      const result = await window.electronAPI.selectOpenTerminalProjectFolder({
+        connectionId: activeConnectionId,
+        chatId: activeChatId,
+        connectionUrl: openConnections.get(activeConnectionId) ?? ''
+      })
+      if (result?.canceled) {
+        projectMessage = ''
+        return
+      }
+      projectFolder = result.path
+      if (result.warning) projectError = result.warning
+      else projectMessage = $i18n.t('statusBar.projectReady')
+      if (result.directConnectionChanged) reloadConnectionWebview(activeConnectionId)
+    } catch (error: any) {
+      projectError = error?.message ?? $i18n.t('statusBar.projectError')
+      projectMessage = ''
+    } finally {
+      projectBusy = false
+    }
+  }
+
+  const clearProjectFolder = async () => {
+    if (!activeConnectionId || !activeChatId || projectBusy) return
+    projectBusy = true
+    projectError = ''
+    try {
+      await window.electronAPI.clearOpenTerminalProjectFolder(activeConnectionId, activeChatId)
+      projectFolder = null
+      projectMessage = $i18n.t('statusBar.projectCleared')
+    } catch (error: any) {
+      projectError = error?.message ?? $i18n.t('statusBar.projectError')
+    } finally {
+      projectBusy = false
+    }
+  }
+
+  $effect(() => {
+    const connectionId = activeConnectionId
+    const chatId = chatIds[connectionId] ?? ''
+    if (view === 'connected') void refreshProjectFolder(connectionId, chatId)
+    else projectFolder = null
+  })
+
   // ── Webview event delivery ─────────────────────────────
   // Single path: all events from the main process flow through here.
   // Query events target a specific webview; everything else broadcasts.
@@ -341,7 +482,9 @@
     if (!container) return
 
     const webviews = connId
-      ? [container.querySelector(`webview[partition="persist:connection-${connId}"]`) as any].filter(Boolean)
+      ? [
+          container.querySelector(`webview[partition="persist:connection-${connId}"]`) as any
+        ].filter(Boolean)
       : Array.from(container.querySelectorAll('webview'))
 
     for (const wv of webviews) {
@@ -352,7 +495,9 @@
         // Webview not ready — queue delivery until dom-ready
         const onReady = () => {
           wv.removeEventListener('dom-ready', onReady)
-          try { wv.send('desktop:event', event) } catch (_) {}
+          try {
+            wv.send('desktop:event', event)
+          } catch (_) {}
         }
         wv.addEventListener('dom-ready', onReady)
       }
@@ -427,13 +572,38 @@
       }
 
       // ── Desktop-only state (not forwarded to webviews) ─
-      if (data.type === 'status:open-terminal') { openTerminalStatus = data.data; return }
-      if (data.type === 'status:open-terminal-setup') { openTerminalSetupStatus = data.data ?? ''; return }
-      if (data.type === 'open-terminal:ready') { openTerminalInfo = data.data; openTerminalStatus = 'started'; openTerminalSetupStatus = ''; return }
-      if (data.type === 'status:llamacpp') { llamaCppStatus = data.data; return }
-      if (data.type === 'status:llamacpp-setup') { llamaCppSetupStatus = data.data ?? ''; return }
-      if (data.type === 'llamacpp:ready') { llamaCppInfo = data.data; llamaCppStatus = 'started'; llamaCppSetupStatus = ''; return }
-      if (data.type === 'status:install') { installStatus = data.data ?? ''; return }
+      if (data.type === 'status:open-terminal') {
+        openTerminalStatus = data.data
+        return
+      }
+      if (data.type === 'status:open-terminal-setup') {
+        openTerminalSetupStatus = data.data ?? ''
+        return
+      }
+      if (data.type === 'open-terminal:ready') {
+        openTerminalInfo = data.data
+        openTerminalStatus = 'started'
+        openTerminalSetupStatus = ''
+        return
+      }
+      if (data.type === 'status:llamacpp') {
+        llamaCppStatus = data.data
+        return
+      }
+      if (data.type === 'status:llamacpp-setup') {
+        llamaCppSetupStatus = data.data ?? ''
+        return
+      }
+      if (data.type === 'llamacpp:ready') {
+        llamaCppInfo = data.data
+        llamaCppStatus = 'started'
+        llamaCppSetupStatus = ''
+        return
+      }
+      if (data.type === 'status:install') {
+        installStatus = data.data ?? ''
+        return
+      }
       if (data.type === 'packages:changed') {
         localInstalled = !!data.data?.['open-webui']
         return
@@ -528,7 +698,10 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="h-full w-full flex flex-col bg-[#f5f5f7] dark:bg-[#0a0a0a] text-[#1d1d1f] dark:text-[#fafafa]" in:fade={{ duration: 200 }}>
+<div
+  class="h-full w-full flex flex-col bg-[#f5f5f7] dark:bg-[#0a0a0a] text-[#1d1d1f] dark:text-[#fafafa]"
+  in:fade={{ duration: 200 }}
+>
   <div class="flex-1 min-h-0 flex">
     {#if sidebarOpen}
       <Sidebar
@@ -542,7 +715,9 @@
         bind:settingsOpen
         onConnect={connect}
         onDisconnect={disconnect}
-        onAddView={() => { showAddConnectionModal = true }}
+        onAddView={() => {
+          showAddConnectionModal = true
+        }}
         {onOpenSettings}
         onRename={async (id, name) => {
           await window.electronAPI.updateConnection(id, { name })
@@ -572,7 +747,10 @@
       bind:autoInstall
       onStartInstall={startInstall}
       onAddConnection={addConnection}
-      onSetView={(v) => { view = v }}
+      onSetView={(v) => {
+        view = v
+      }}
+      onNavigationChange={handleNavigationChange}
     />
   </div>
 
@@ -585,17 +763,38 @@
           ? openTerminalStatus === 'started'
           : llamaCppStatus === 'started'}
       statusText={activeLog === 'server'
-        ? (serverStatus === 'starting' ? 'Starting Open WebUI…' : serverStatus === 'running' && !serverReachable ? 'Waiting for server…' : installStatus || '')
+        ? serverStatus === 'starting'
+          ? 'Starting Open WebUI…'
+          : serverStatus === 'running' && !serverReachable
+            ? 'Waiting for server…'
+            : installStatus || ''
         : activeLog === 'open-terminal'
-          ? (openTerminalStatus === 'stopping' ? 'Stopping Open Terminal…' : openTerminalSetupStatus || (openTerminalStatus === 'starting' ? 'Starting Open Terminal…' : ''))
-          : (llamaCppStatus === 'stopping' ? 'Stopping llama-server…' : llamaCppSetupStatus || (llamaCppStatus === 'starting' ? 'Starting llama-server…' : llamaCppStatus === 'setting-up' ? 'Setting up llama.cpp…' : ''))}
+          ? openTerminalStatus === 'stopping'
+            ? 'Stopping Open Terminal…'
+            : openTerminalSetupStatus ||
+              (openTerminalStatus === 'starting' ? 'Starting Open Terminal…' : '')
+          : llamaCppStatus === 'stopping'
+            ? 'Stopping llama-server…'
+            : llamaCppSetupStatus ||
+              (llamaCppStatus === 'starting'
+                ? 'Starting llama-server…'
+                : llamaCppStatus === 'setting-up'
+                  ? 'Setting up llama.cpp…'
+                  : '')}
       connectPty={getConnectPty(activeLog)}
       disconnectPty={getDisconnectPty(activeLog)}
       readonly={activeLog !== 'server'}
       onWrite={getOnWrite(activeLog)}
       onResize={getOnResize(activeLog)}
-      onStop={activeLog === 'open-terminal' ? toggleOpenTerminal : activeLog === 'llama-server' ? toggleLlamaCpp : undefined}
-      onClose={() => { activeLog = null; showingLogs = false }}
+      onStop={activeLog === 'open-terminal'
+        ? toggleOpenTerminal
+        : activeLog === 'llama-server'
+          ? toggleLlamaCpp
+          : undefined}
+      onClose={() => {
+        activeLog = null
+        showingLogs = false
+      }}
     />
   {/if}
 
@@ -608,6 +807,12 @@
     {openTerminalInstalled}
     llamaCppInstalled={!!llamaCppInfo?.binaryPath}
     {activeLog}
+    {projectControlsVisible}
+    {activeChatId}
+    {projectFolder}
+    {projectBusy}
+    {projectMessage}
+    {projectError}
     onSelectLog={selectLog}
     onStartServer={async () => {
       if (!localInstalled) {
@@ -623,5 +828,10 @@
     }}
     onToggleOpenTerminal={toggleOpenTerminal}
     onToggleLlamaCpp={toggleLlamaCpp}
+    onChooseProjectFolder={chooseProjectFolder}
+    onClearProjectFolder={clearProjectFolder}
+    onOpenProjectFolder={() => {
+      if (projectFolder) window.electronAPI.openPath(projectFolder)
+    }}
   />
 </div>

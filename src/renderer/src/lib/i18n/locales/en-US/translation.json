@@ -47,7 +47,6 @@
   "common.experimental": "Experimental",
   "common.copied": "✓",
 
-
   "setup.newConnection": "New Connection",
   "setup.newConnectionDesc": "Connect to a remote Open WebUI server.",
   "setup.orInstallLocally": "Or install locally →",
@@ -136,6 +135,17 @@
   "statusBar.server": "Open WebUI",
   "statusBar.serverRunning": "Open WebUI is running",
   "statusBar.serverStopped": "Open WebUI is not running",
+  "statusBar.project": "Project",
+  "statusBar.chooseProject": "Choose project",
+  "statusBar.chooseProjectFolder": "Choose a project folder for this chat",
+  "statusBar.changeProjectFolder": "Change project folder from {{folder}}",
+  "statusBar.openChatForProject": "Open a saved chat to choose its project folder",
+  "statusBar.openProjectFolder": "Open project folder in File Explorer",
+  "statusBar.clearProjectFolder": "Unlink project folder from this chat",
+  "statusBar.projectConnecting": "Connecting project folder…",
+  "statusBar.projectReady": "Project folder is ready",
+  "statusBar.projectCleared": "Project folder unlinked",
+  "statusBar.projectError": "Could not configure the project folder",
 
   "settings.title": "Settings",
   "settings.closeSettings": "Close settings",

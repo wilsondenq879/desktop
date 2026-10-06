@@ -44,6 +44,7 @@ Use both at the same time.
 - 🧠 **Local inference.** Optionally run models entirely on your hardware via the built-in llama.cpp engine. Your data never leaves your machine.
 - 🎯 **One-click setup.** Launch and connect to a server in seconds. Local models can be enabled from the settings.
 - 🔌 **Multiple connections.** Juggle servers and switch between them instantly.
+- 🗂️ **Per-chat project folders.** Link a Windows folder to a saved chat and let Open Terminal restore that working directory automatically. See [Project folders](docs/PROJECT_FOLDERS.md).
 - 🔄 **Auto-updates.** New releases land in the background.
 - 📡 **Offline-ready.** No internet needed after initial setup.
 - 💻 **Cross-platform.** macOS, Windows, and Linux.

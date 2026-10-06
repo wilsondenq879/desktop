@@ -115,6 +115,20 @@ const api = {
   stopOpenTerminal: () => ipcRenderer.invoke('open-terminal:stop'),
   getOpenTerminalInfo: () => ipcRenderer.invoke('open-terminal:info'),
   getOpenTerminalStatus: () => ipcRenderer.invoke('open-terminal:status'),
+  getOpenTerminalProjectFolder: (connectionId: string, chatId: string) =>
+    ipcRenderer.invoke('open-terminal:project:get', connectionId, chatId),
+  selectOpenTerminalProjectFolder: (options: {
+    connectionId: string
+    chatId: string
+    connectionUrl: string
+  }) => ipcRenderer.invoke('open-terminal:project:select', options),
+  applyOpenTerminalProjectFolder: (options: {
+    connectionId: string
+    chatId: string
+    connectionUrl: string
+  }) => ipcRenderer.invoke('open-terminal:project:apply', options),
+  clearOpenTerminalProjectFolder: (connectionId: string, chatId: string) =>
+    ipcRenderer.invoke('open-terminal:project:clear', connectionId, chatId),
   connectOpenTerminalPty: (onOutput: (data: string) => void) => {
     otPtyOutputCallback = onOutput
     ipcRenderer.invoke('open-terminal:pty:connect')
@@ -170,7 +184,8 @@ const api = {
   getConnections: () => ipcRenderer.invoke('connections:list'),
   addConnection: (connection: any) => ipcRenderer.invoke('connections:add', connection),
   removeConnection: (id: string) => ipcRenderer.invoke('connections:remove', id),
-  updateConnection: (id: string, updates: any) => ipcRenderer.invoke('connections:update', id, updates),
+  updateConnection: (id: string, updates: any) =>
+    ipcRenderer.invoke('connections:update', id, updates),
   setDefaultConnection: (id: string) => ipcRenderer.invoke('connections:setDefault', id),
   connectTo: (id: string) => ipcRenderer.invoke('connections:connect', id),
   validateUrl: (url: string) => ipcRenderer.invoke('validate:url', url),
@@ -185,7 +200,8 @@ const api = {
   getChangelog: () => ipcRenderer.invoke('app:changelog'),
 
   // Auth token relay from webview
-  setAuthToken: (token: string) => ipcRenderer.invoke('app:setAuthToken', token)
+  setAuthToken: (token: string, connectionId?: string) =>
+    ipcRenderer.invoke('app:setAuthToken', token, connectionId)
 }
 
 if (process.contextIsolated) {

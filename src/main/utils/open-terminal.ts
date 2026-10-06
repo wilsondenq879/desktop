@@ -1,7 +1,9 @@
 // @ts-nocheck
 
 import crypto from 'crypto'
+import fs from 'fs'
 import log from 'electron-log'
+import os from 'os'
 import * as pty from 'node-pty'
 import {
   getPythonPath,
@@ -37,6 +39,126 @@ export const getOpenTerminalInfo = () => ({
 
 export const getOpenTerminalPty = (): pty.IPty | null => ptyProcess
 export const getOpenTerminalLog = (): string[] => logBuffer
+
+export interface OpenTerminalProjectFolder {
+  connectionId: string
+  chatId: string
+  path: string
+}
+
+const getProjectFolders = (config: Awaited<ReturnType<typeof getConfig>>) =>
+  config.openTerminal?.projectFolders ?? {}
+
+/**
+ * Return the locally persisted project folder for a connection + chat pair.
+ * Paths never leave the desktop app except when they are sent to the local
+ * Open Terminal instance.
+ */
+export const getOpenTerminalProjectFolder = async (
+  connectionId: string,
+  chatId: string
+): Promise<string | null> => {
+  if (!connectionId || !chatId) return null
+  const config = await getConfig()
+  return getProjectFolders(config)[connectionId]?.[chatId] ?? null
+}
+
+/**
+ * Restore a chat's cwd in Open Terminal. Open Terminal keeps its per-session
+ * cwd map in memory, so the desktop reapplies the persisted value after an
+ * app or service restart.
+ */
+export const applyOpenTerminalProjectFolder = async (
+  chatId: string,
+  folderPath: string
+): Promise<string> => {
+  if (!chatId) throw new Error('A chat must be open before selecting a project folder.')
+  if (!folderPath) throw new Error('No project folder was provided.')
+
+  const info = getOpenTerminalInfo()
+  if (info.status !== 'started' || !info.url || !info.apiKey) {
+    throw new Error('Open Terminal is not running.')
+  }
+
+  const response = await fetch(`${info.url.replace(/\/$/, '')}/files/cwd`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${info.apiKey.trim()}`,
+      'Content-Type': 'application/json',
+      'X-Session-Id': chatId
+    },
+    body: JSON.stringify({ path: folderPath })
+  })
+
+  if (!response.ok) {
+    let detail = ''
+    try {
+      const payload = await response.json()
+      detail = payload?.detail ? `: ${payload.detail}` : ''
+    } catch {
+      // Keep the HTTP status as the useful fallback.
+    }
+    throw new Error(`Open Terminal rejected the project folder (${response.status})${detail}`)
+  }
+
+  const payload = await response.json()
+  return payload?.cwd ?? folderPath
+}
+
+export const setOpenTerminalProjectFolder = async (
+  connectionId: string,
+  chatId: string,
+  folderPath: string
+): Promise<OpenTerminalProjectFolder> => {
+  if (!connectionId) throw new Error('No Open WebUI connection is active.')
+
+  const stat = await fs.promises.stat(folderPath).catch(() => null)
+  if (!stat?.isDirectory()) throw new Error('The selected project folder is not available.')
+
+  const resolvedPath = await applyOpenTerminalProjectFolder(chatId, folderPath)
+  const config = await getConfig()
+  const projectFolders = structuredClone(getProjectFolders(config))
+  projectFolders[connectionId] = {
+    ...(projectFolders[connectionId] ?? {}),
+    [chatId]: resolvedPath
+  }
+
+  await setConfig({
+    openTerminal: {
+      ...config.openTerminal,
+      projectFolders
+    }
+  })
+
+  return { connectionId, chatId, path: resolvedPath }
+}
+
+export const clearOpenTerminalProjectFolder = async (
+  connectionId: string,
+  chatId: string
+): Promise<void> => {
+  if (!connectionId || !chatId) return
+
+  const config = await getConfig()
+  const projectFolders = structuredClone(getProjectFolders(config))
+  if (projectFolders[connectionId]) {
+    delete projectFolders[connectionId][chatId]
+    if (Object.keys(projectFolders[connectionId]).length === 0) {
+      delete projectFolders[connectionId]
+    }
+  }
+
+  await setConfig({
+    openTerminal: {
+      ...config.openTerminal,
+      projectFolders
+    }
+  })
+
+  if (getOpenTerminalInfo().status === 'started') {
+    await applyOpenTerminalProjectFolder(chatId, config.openTerminal?.cwd || os.homedir())
+  }
+}
 
 export const startOpenTerminal = async (
   port: number | null = null,
@@ -74,7 +196,7 @@ export const startOpenTerminal = async (
     } catch (err) {
       throw new Error(
         `Open Terminal is not installed and auto-install failed. ` +
-        `Please connect to the internet and try again. (${err?.message ?? err})`
+          `Please connect to the internet and try again. (${err?.message ?? err})`
       )
     }
   }
@@ -103,14 +225,22 @@ export const startOpenTerminal = async (
     }
   }
 
-  const cwd = config.openTerminal?.cwd || require('os').homedir()
+  const cwd = config.openTerminal?.cwd || os.homedir()
 
   const commandArgs = [
-    '-m', 'uv', 'run', 'open-terminal', 'run',
-    '--host', host,
-    '--port', availablePort.toString(),
-    '--api-key', generatedKey,
-    '--cwd', cwd
+    '-m',
+    'uv',
+    'run',
+    'open-terminal',
+    'run',
+    '--host',
+    host,
+    '--port',
+    availablePort.toString(),
+    '--api-key',
+    generatedKey,
+    '--cwd',
+    cwd
   ]
 
   log.info('Starting Open Terminal...', pythonPath, commandArgs.join(' '))
@@ -129,9 +259,7 @@ export const startOpenTerminal = async (
       }
     })
   } catch (error) {
-    throw new Error(
-      `Failed to spawn Open Terminal: ${error?.message ?? error}`
-    )
+    throw new Error(`Failed to spawn Open Terminal: ${error?.message ?? error}`)
   }
 
   const spawnedPid = spawned.pid
