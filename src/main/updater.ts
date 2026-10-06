@@ -4,12 +4,22 @@ import { app, BrowserWindow } from 'electron'
 
 let mainWin: BrowserWindow | null = null
 
+const isPortableBuild = (): boolean => Boolean(process.env.PORTABLE_EXECUTABLE_FILE)
+
 const send = (type: string, data?: any): void => {
   mainWin?.webContents.send('main:data', { type, data })
 }
 
 export function initUpdater(window: BrowserWindow): void {
   mainWin = window
+
+  // electron-builder's portable target runs from a temporary extraction directory.
+  // Installing an NSIS update from there would replace the portable build with the
+  // upstream installed app, so portable releases are updated by replacing the EXE.
+  if (isPortableBuild()) {
+    log.info('Auto update disabled for portable build')
+    return
+  }
 
   autoUpdater.logger = log
   autoUpdater.autoDownload = false
@@ -56,8 +66,8 @@ export function initUpdater(window: BrowserWindow): void {
 }
 
 export async function checkForUpdates(): Promise<void> {
-  if (!app.isPackaged) {
-    log.info('Skipping update check — app is not packaged')
+  if (!app.isPackaged || isPortableBuild()) {
+    log.info('Skipping update check — app is not packaged or is a portable build')
     send('update:not-available')
     return
   }
@@ -65,9 +75,11 @@ export async function checkForUpdates(): Promise<void> {
 }
 
 export async function downloadUpdate(): Promise<void> {
+  if (isPortableBuild()) return
   await autoUpdater.downloadUpdate()
 }
 
 export function installUpdate(): void {
+  if (isPortableBuild()) return
   autoUpdater.quitAndInstall(false, true)
 }
