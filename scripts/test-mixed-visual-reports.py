@@ -48,6 +48,14 @@ async def main():
     assert architecture in result and '{{render_' not in result and '## 四、限制' in result
     data=json.dumps({'nodes':[],'edges':[]})
     assert guard._remove_visual_data('重點'+data+'結論')=='重點結論'
+    # A real renderer failure is not "the model supplied no data".
+    state=req.state.fireworks_diagram
+    state.pop('artifact',None);state.pop('architecture_artifacts',None)
+    state['architecture_error']='架構排版失敗：已取得節點，但走線檢查未通過'
+    async def no_data(*args,**kwargs):return None,None
+    guard._recover_plan=no_data
+    result=(await guard.outlet(body,__request__=req,__user__={'id':'synthetic'}))['messages'][-1]['content']
+    assert '架構排版失敗' in result and '模型未提供符合樣板' not in result
     for query in ['畫一張雷達圖','請畫長條圖','畫一張圓餅圖']:
         assert not module.Filter._visual_intents(query)[1],query
     print('PASS: mixed reports, both artifact types, legacy image, no invented data, report preservation, native-miss recovery, content/output sync')

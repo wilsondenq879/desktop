@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-10-17
+
+### Fixed
+
+- Server visual patch: Renderer 6.2 / Guard 13.2. Correct hub/port spacing, split distributed logical group regions, preserve CJK IDs, wrap labels at final card width, and render up to 48 ports without negative dimensions.
+- Validate the complete decorated SVG before PNG export. Retry bounded alternate layouts; if a global view cannot satisfy the unchanged quality gates, emit explicitly labelled focused connection views retaining all canonical nodes, edges and directions.
+- Separate missing model data from actual renderer errors. Preserve real artifacts when optional UI notifications/diagnostics fail; retain grounded early text when the short preface pass times out. Details and limits: `docs/ARCHITECTURE_RELIABILITY.md`.
+
+### Verification
+
+- 40 real PNG/SVG/HTML topology cases plus one forced fallback pass final geometry/composition checks; notification/disconnected-UI and chart/report regressions also pass. Live verification uses two models and regenerates the original failed conversation without deleting older answers. This is evidence for the documented valid-input range, not an unconditional uptime guarantee.
+
 ## [0.0.33] - 2026-10-09
 
 ### Added

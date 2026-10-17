@@ -65,3 +65,5 @@ python3 scripts/restore-server-profile.py --help
 ## 驗證
 
 `test-server-profile.py` 驗證所有封裝資源雜湊、安裝冪等、設定允許清單與還原備份。`test-mixed-visual-reports.py` 驗證報告保留、兩類圖同存、內容與 structured output 一致。`verify-diagram-live.py` 對本機已登入站台做實際生成；新建測試對談成功後封存，不修改原有使用者對談。
+
+Web 端的 Renderer 6.2／Guard 13.2 可靠性修正與實測範圍見 [ARCHITECTURE_RELIABILITY.md](ARCHITECTURE_RELIABILITY.md)。後端更新可立即供瀏覽器／手機共用，不代表歷史桌面安裝包會被回溯重寫；重新建置時 `prepare:profile` 會帶入目前已備份的 managed code。

@@ -1,8 +1,8 @@
 """
 title: Fireworks 技術圖表與統計樣板 Renderer
 description: 以 Fireworks 產生技術架構圖；以可重用 SVG 樣板產生比較、趨勢、組成、分佈及時程統計成品。
-version: 6.1.0
-requirements: cairosvg
+version: 6.2.0
+requirements: resvg-py==0.5.0
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ import asyncio
 import csv
 from datetime import date, timedelta
 import html
+import hashlib
 import json
 import math
 import os
@@ -90,6 +91,13 @@ class Tools:
         explicit = str(raw.get("icon") or raw.get("icon_id") or "").lower()
         if explicit in catalog:
             return explicit
+        label=str(raw.get('label') or '').lower()
+        # The equipment's name outranks a component mentioned in its detail.
+        # "SFP28 Switch" is not an SFP cage; "GPU Node / RDMA NIC" is a host.
+        if re.search(r'switch|交換[器機]',label):
+            return 'hardware:rdma-switch' if re.search(r'rdma|25g|50g|100g',label) else 'hardware:desktop-switch'
+        if re.search(r'workstation|工作站|gpu[ _-]*(?:node|host)|運算節點|計算節點',label):
+            return 'hardware:ai-workstation'
         text = " ".join(str(raw.get(k) or "") for k in ("label", "detail", "type")).lower()
         matches = []
         for icon_id, item in catalog.items():
@@ -177,9 +185,9 @@ class Tools:
         tokens = re.findall(r"[A-Za-z0-9][A-Za-z0-9._/-]*|[^\x00-\xff]|\s+|.", text)
         pieces = []
         for token in tokens:
-            pieces.extend(list(token) if len(token)*0.56 > units and token.isascii() else [token])
+            pieces.extend(list(token) if sum(Tools._char_units(c) for c in token)>units else [token])
         for char in pieces:
-            step = sum(1.0 if ord(c) > 255 else (0.32 if c.isspace() else 0.56) for c in char)
+            step = sum(Tools._char_units(c) for c in char)
             if line and width + step > units:
                 lines.append(line.strip())
                 line, width = "", 0.0
@@ -188,6 +196,27 @@ class Tools:
         if line.strip():
             lines.append(line.strip())
         return lines
+
+    @staticmethod
+    def _char_units(char):
+        return 1.0 if ord(char)>255 or char in 'MW@#%&' else .32 if char.isspace() or char in '.,:;!|il' else .72 if char.isupper() else .6
+
+    @classmethod
+    def _port_geometry(cls,node):
+        ports=node.get('port_groups') or []
+        if not ports:return 0,0,0,[]
+        total=sum(p['count'] for p in ports)
+        columns=min(total,max(1,int((node['width']-35)/15)))
+        rows=math.ceil(total/columns)
+        summary=' · '.join(str(p['count'])+' x '+p['label'] for p in ports)
+        lines=cls._wrap(summary,(node['width']-32)/13)
+        return 20*rows+17*len(lines)+14,columns,rows,lines
+
+    @classmethod
+    def _node_height(cls,node):
+        available=node['width']-(132 if node.get('brand_icon') and node['brand_icon']!=node['icon'] else 102)
+        height=38+23*len(cls._wrap(node['label'],available/18))+19*len(cls._wrap(node['sublabel'],available/13.5))
+        return math.ceil(max(112,height+cls._port_geometry(node)[0])/36)*36
 
     @classmethod
     def _decorate_svg(cls, source: str, diagram: dict) -> str:
@@ -268,6 +297,8 @@ class Tools:
                 group.remove(child)
             x, y, w, h = (node[k] for k in ("x", "y", "width", "height"))
             group.set("data-icon-id", node["icon"])
+            group.set('data-origin-node-id',node.get('origin_id',node['id']))
+            group.set('data-logical-group',node.get('group',''))
             group.set("data-icon-pack", catalog[node['icon']].get('provider','local-architecture-v2'))
             element(group, "rect", x=x, y=y, width=w, height=h, rx=11, fill="#14191F", stroke="#3A4652", stroke_width=1.4)
             item=catalog[node['icon']]
@@ -291,7 +322,10 @@ class Tools:
             available=w-(132 if badge and badge!=node['icon'] else 102)
             title_lines = cls._wrap(node["label"], available/18)
             detail_lines = cls._wrap(node["sublabel"], available/13.5)
-            content_height=h-(48 if node['port_groups'] else 0)
+            panel_height,columns,port_rows,summary_lines=cls._port_geometry(node)
+            content_height=h-panel_height
+            if content_height < 38+len(title_lines)*23+len(detail_lines)*19:
+                raise ValueError('Final wrapped text does not fit its node')
             glyph.set('y',str(y+(content_height-48)/2))
             if brand:
                 plate_shape.set('y',str(y+(content_height-48)/2-4))
@@ -305,16 +339,18 @@ class Tools:
             if node["port_groups"]:
                 ports = node["port_groups"]
                 total = sum(p["count"] for p in ports)
-                pw = min(20, (w-72-(total-1)*5)/total)
-                px = x + (w-(total*pw+(total-1)*5))/2
-                py = y+h-48
+                pw=min(20,(w-40-(columns-1)*5)/columns)
+                py=y+content_height+8
+                index=0
                 for port in ports:
                     for _ in range(port["count"]):
-                        element(group, "rect", x=round(px, 2), y=py, width=round(pw, 2), height=13, rx=2, fill=cls._LINE_COLORS[port["tone"]])
-                        px += pw + 5
-                summary = " · ".join(str(p["count"])+" x "+p["label"] for p in ports)
-                t = text(group, x+w/2, y+h-14, summary, 13, "#A5B2BF")
-                t.set("text-anchor", "middle")
+                        col=index%columns;row=index//columns
+                        count=min(columns,total-row*columns)
+                        px=x+(w-(count*pw+(count-1)*5))/2+col*(pw+5)
+                        element(group, "rect", x=round(px,2),y=py+row*20,width=round(pw,2),height=13,rx=2,fill=cls._LINE_COLORS[port['tone']])
+                        index+=1
+                for index,line in enumerate(summary_lines):
+                    t=text(group,x+w/2,py+port_rows*20+14+index*17,line,13,'#A5B2BF');t.set('text-anchor','middle')
         if diagram.get('layout')=='rack':
             slots=[n for n in diagram['nodes'] if n['group']=='rack']
             rail=element(root,'g',data_graph_role='decoration')
@@ -331,13 +367,19 @@ class Tools:
 
     @classmethod
     def _id(cls, value: Any, index: int) -> str:
-        candidate = cls._SAFE_ID.sub("-", cls._clean(value, 48)).strip("-")
-        return candidate or f"node-{index + 1}"
+        raw=cls._clean(value,48)
+        candidate=cls._SAFE_ID.sub('-',raw).strip('-')
+        # A CJK ID must resolve identically from nodes and edges, regardless
+        # of their list positions. Also avoid "a b"/"a-b" collisions.
+        if raw and candidate!=raw:
+            return (candidate or 'node')+'-'+hashlib.sha256(raw.encode()).hexdigest()[:10]
+        return candidate or f'node-{index+1}'
 
     @staticmethod
     async def _status(emitter, description: str, done: bool = False, hidden: bool = False) -> None:
         if emitter:
-            await emitter({"type": "status", "data": {"description": description, "done": done, "hidden": hidden}})
+            try:await emitter({"type": "status", "data": {"description": description, "done": done, "hidden": hidden}})
+            except Exception:pass  # A disconnected UI does not invalidate a real artifact.
 
     @staticmethod
     def _runtime_root() -> Path:
@@ -385,8 +427,8 @@ class Tools:
         ids: set[str] = set()
         for index, raw in enumerate(nodes):
             node_id = cls._id(raw.get("id") or raw.get("label"), index)
-            while node_id in ids:
-                node_id = f"{node_id}-{index + 1}"
+            if node_id in ids:
+                raise ValueError('節點 id 重複，無法判定連線；請使用唯一 id')
             ids.add(node_id)
             tone = str(raw.get("tone") or "default").lower()
             if tone not in cls._TONE_COLORS:
@@ -425,9 +467,8 @@ class Tools:
                 available=node_width-(132 if node.get('brand_icon') and node['brand_icon']!=node['icon'] else 102)
                 title_lines = cls._wrap(node["label"], available/18)
                 detail_lines = cls._wrap(node["sublabel"], available/13.5)
-                node_height = max(112, 38+len(title_lines)*23+len(detail_lines)*19)
-                if node["port_groups"]:
-                    node_height += 48
+                node['width']=node_width
+                node_height=cls._node_height(node)
                 # A shared routing grid prevents 3–9px jogs when endpoint
                 # groups have different port counts. Keep node boundaries,
                 # row heights and clearance corridors on the same grid.
@@ -447,11 +488,19 @@ class Tools:
         height = max(560, y-20)
         layout=cls._choose_layout(title,normalized_nodes,edges,layout)
         hub=None
+        geometric_edges=[{'from':cls._id(e.get('from') or e.get('source'),i),
+            'to':cls._id(e.get('to') or e.get('target'),i+1)} for i,e in enumerate(edges)]
         if layout!='layered':
-            width,height,hub=cls._arrange(normalized_nodes,edges,layout)
+            width,height,hub=cls._arrange(normalized_nodes,geometric_edges,layout)
+            # Templates may change a wide switch into a narrower hub. Size
+            # the *final* wrapped labels, then reflow rather than clipping.
+            for node in normalized_nodes:
+                node['height']=max(node['height'],cls._node_height(node))
+            width,height,hub=cls._arrange(normalized_nodes,geometric_edges,layout)
 
         node_map = {node["id"]: node for node in normalized_nodes}
         normalized_edges: list[dict] = []
+        hub_pitch=max((n['height'] for n in normalized_nodes if n['id']!=hub),default=144)+144
         for index, raw in enumerate(edges):
             source = cls._id(raw.get("from") or raw.get("source"), index)
             target = cls._id(raw.get("to") or raw.get("target"), index + 1)
@@ -486,7 +535,7 @@ class Tools:
                 "id": f"edge-{index + 1}", "source": source, "target": target,
                 "source_port": source_port, "target_port": target_port, "flow": flow,
                 "routing_padding":36,"port_clearance":36,
-                "port_spacing":36,
+                "port_spacing":hub_pitch if hub in {source,target} and layout in {'star','ecosystem'} else 36,
                 "min_segment_length":16,"max_route_bends":4,
                 "label": cls._clean(raw.get("label"), 42),
                 "dashed": bool(raw.get("dashed")),
@@ -501,16 +550,21 @@ class Tools:
         known_groups = {item["id"]: item for item in groups if isinstance(item, dict) and item.get("id")}
         for group_name in sorted({node["group"] for node in normalized_nodes if node["group"]}):
             members = [node for node in normalized_nodes if node["group"] == group_name]
-            left = min(node["x"] for node in members) - 24
-            top = min(node["y"] for node in members) - 42
-            right = max(node["x"] + node["width"] for node in members) + 24
-            bottom = max(node["y"] + node["height"] for node in members) + 22
             definition = known_groups.get(group_name, {})
-            containers.append({
-                "id": f"group-{cls._id(group_name, len(containers))}", "x": left, "y": top,
-                "width": right - left, "height": bottom - top,
-                "label": cls._clean(definition.get("label") or ('機櫃配置示意；安裝相容性待核實' if layout=='rack' and group_name=='rack' else group_name), 36),
-            })
+            def bounds(items):
+                return (min(n['x'] for n in items)-24,min(n['y'] for n in items)-42,
+                    max(n['x']+n['width'] for n in items)+24,max(n['y']+n['height'] for n in items)+22)
+            left,top,right,bottom=bounds(members)
+            # A logical group can be physically distributed. A single large
+            # rectangle used to enclose an unrelated hub and fail the gutter
+            # check. Preserve group identity with same-labelled regions.
+            overlaps=any(n not in members and n['x']<right and n['x']+n['width']>left and n['y']<bottom and n['y']+n['height']>top for n in normalized_nodes)
+            for part in ([[n] for n in members] if overlaps else [members]):
+                left,top,right,bottom=bounds(part)
+                containers.append({
+                    'id':f'group-{cls._id(group_name,len(containers))}-{len(containers)}','x':left,'y':top,
+                    'width':right-left,'height':bottom-top,
+                    'label':cls._clean(definition.get('label') or ('機櫃配置示意；安裝相容性待核實' if layout=='rack' and group_name=='rack' else group_name),36)})
 
         return {
             "schema_version": 1, "mode": "architecture", "template_type": "architecture",
@@ -578,11 +632,15 @@ class Tools:
             for component in components:
                 columns[0 if len(columns[0])<=len(columns[1]) else 1].extend(component)
             rows=max(map(len,columns))
-            center.update(x=576,y=top+max(0,rows-1)*144,width=360 if layout=='star' else 432)
-            center['height']=max(center['height'],math.ceil((max(3,rows)*36+72)/36)*36)
+            leaf_height=max(n['height'] for n in leaves)
+            step=leaf_height+144
+            # One horizontal lane per leaf. The old 36px hub port pitch did
+            # not match 288px leaf rows and forced overlaps on ordinary fans.
+            center.update(x=576,y=top,width=360 if layout=='star' else 432)
+            center['height']=max(center['height'],(rows-1)*step+leaf_height)
             for col,column in enumerate(columns):
                 for row,node in enumerate(column):
-                    node.update(x=72 if col==0 else 1188,y=top+row*288,width=288)
+                    node.update(x=72 if col==0 else 1188,y=top+row*step,width=288,height=leaf_height)
             width=1584
         elif layout=='dual_compute':
             group_names=list(dict.fromkeys(n['group'] for n in nodes if n['group']))
@@ -591,8 +649,10 @@ class Tools:
                 column=group_names.index(node['group']) if len(group_names)==2 and node['group'] else i%2
                 columns[column].append(node)
             for col,column in enumerate(columns):
-                for row,node in enumerate(sorted(column,key=lambda n:n['level'])):
-                    node.update(x=144+col*648,y=top+row*324,width=360)
+                cursor=top
+                for node in sorted(column,key=lambda n:n['level']):
+                    node.update(x=144+col*648,y=cursor,width=360)
+                    cursor+=node['height']+144
             width=1296
         elif layout=='rack':
             inside=[n for n in nodes if n['group']=='rack'];outside=[n for n in nodes if n['group']!='rack']
@@ -601,16 +661,81 @@ class Tools:
                 node.update(x=144,y=cursor,width=576)
                 cursor+=node['height']+108
             for i,node in enumerate(outside):
-                node.update(x=1116,y=top+i*288,width=288)
+                node.update(x=1116,y=top+sum(n['height']+144 for n in outside[:i]),width=288)
             width=1512
         else:  # dataflow: preserve explicit levels, rotate left-to-right.
             levels=sorted({n['level'] for n in nodes})
             for col,level in enumerate(levels):
-                for row,node in enumerate(n for n in nodes if n['level']==level):
-                    node.update(x=108+col*468,y=top+row*288,width=288)
+                cursor=top
+                for node in (n for n in nodes if n['level']==level):
+                    node.update(x=108+col*468,y=cursor,width=288)
+                    cursor+=node['height']+144
             width=max(1080,108+len(levels)*468)
         height=math.ceil((max(n['y']+n['height'] for n in nodes)+144)/36)*36
         return width,height,hub
+
+    @classmethod
+    def _connection_views(cls,original):
+        """Exact focused views when one global routing cannot pass quality.
+
+        This is not a guessed replacement topology. Every original edge gets
+        one independently routable panel; repeated devices keep canonical IDs.
+        Thus even a non-planar graph can be shown without deleting a link,
+        relaxing the crossing gate or turning crossing lines into junctions.
+        """
+        by_id={n['id']:n for n in original['nodes']}
+        numbers={n['id']:i+1 for i,n in enumerate(original['nodes'])}
+        result={**original,'layout':'connection_views','width':1320,'nodes':[],'arrows':[],'containers':[]}
+        result['_canonical']=original
+        y=max(240,min(n['y'] for n in original['nodes']))
+        connected=set()
+        for index,edge in enumerate(original['arrows']):
+            pair=[]
+            for side,node_id in enumerate([edge['source'],edge['target']]):
+                connected.add(node_id);node=dict(by_id[node_id])
+                node.update(id=f'view-{index}-{side}',origin_id=node_id,width=360)
+                node['label']=f"N{numbers[node_id]} · "+node['label']
+                if node['group']:node['sublabel']+=' · 群組：'+node['group']
+                node['height']=cls._node_height(node);pair.append(node)
+            h=max(n['height'] for n in pair)
+            for side,node in enumerate(pair):
+                node.update(x=96+side*768,y=y+56+(h-node['height'])/2)
+            result['nodes']+=pair
+            result['containers'].append({'id':f'view-panel-{index}','x':64,'y':y,
+                'width':1192,'height':h+88,'label':f"L{index+1} · "+(edge['label'] or '設備連線')})
+            result['arrows'].append({**edge,'source':pair[0]['id'],'target':pair[1]['id'],
+                'source_port':'right','target_port':'left','label':f'L{index+1}',
+                'canonical_source':edge['source'],'canonical_target':edge['target']})
+            y+=h+128
+        for node_id,node in by_id.items():
+            if node_id in connected:continue
+            node={**node,'origin_id':node_id,'width':360,'x':480,'y':y+56}
+            node['height']=cls._node_height(node);result['nodes'].append(node)
+            result['containers'].append({'id':'isolated-'+node_id,'x':448,'y':y,'width':424,
+                'height':node['height']+88,'label':'獨立節點：原資料未提供連線'})
+            y+=node['height']+128
+        result.update(height=y+64,footer_y=y+36,
+            footer='連線分解檢視 · 相同 N 編號是同一設備；L 為原始連線；設備、方向、規格均保留')
+        return result
+
+    @staticmethod
+    def _semantic_graph(diagram):
+        original=diagram.get('_canonical',diagram)
+        return {'nodes':[{k:n.get(k,'') for k in ['id','label','sublabel','group','icon']} for n in original['nodes']],
+            'edges':[{k:e.get(k,'') for k in ['id','source','target','label','direction','dashed','tone']} for e in original['arrows']]}
+
+    @classmethod
+    def _final_svg(cls,source,diagram):
+        font=os.environ.get('OPENWEBUI_DIAGRAM_FONT') or ('PingFang TC' if sys.platform=='darwin' else
+            'Microsoft JhengHei' if sys.platform=='win32' else 'Noto Sans CJK TC')
+        source=re.sub(r'font-family:[^;}]+',f"font-family: '{font}'",source)
+        source=source.replace('</style>','.node-title { fill: #F8FAFC; } .node-sub { fill: #CBD5E1; }</style>')
+        tree=ET.fromstring(cls._decorate_svg(source,diagram))
+        if len(tree.findall('.//*[@data-graph-role="node"]'))!=len(diagram['nodes']) or len(tree.findall('.//*[@data-graph-role="edge"]'))!=len(diagram['arrows']):
+            raise ValueError('Rendered graph lost nodes or edges')
+        ET.SubElement(tree,'{http://www.w3.org/2000/svg}desc',{'id':'architecture-semantic-graph'}).text=json.dumps(cls._semantic_graph(diagram),ensure_ascii=False)
+        tree.set('data-layout',diagram['layout']);tree.set('data-text-complete','true')
+        return ET.tostring(tree,encoding='unicode')
 
     async def render_technical_architecture(
         self,
@@ -626,6 +751,7 @@ class Tools:
     ) -> str:
         """產生有設備圖示／品牌標誌的 PNG、SVG、互動 HTML。layout=auto/layered(分層)/star(中心拓撲)/dual_compute(雙欄主機)/rack(機櫃示意)/dataflow(橫向流程)/ecosystem(生態圈)。rack 必須以 nodes[].group='rack' 明確指定架內設備，不宣稱尺寸或固定方式相容。nodes 必須有 id,label,level；可有 detail,group,tone,icon,brand,port_groups。icon 支援本機四圖庫 lucide/lobe/dashboard/simple 命名空間（例 lobe:ollama、simple:asus、lucide:router），或 hardware:mini-ai-pc/pcie-nic/ai-workstation/desktop-switch/mini-rack 及 nas/router/vpn 等原有 ID。不知道 ID 時先 search_diagram_assets，也可省略讓伺服器自動選圖；不傳 SVG。品牌識別自動加小徽章，硬體不因品牌變成商標卡。port_groups=[{label:'25G',count:4,tone:'active'}] 僅填已知埠數，禁止猜規格。edges 須有 from,to，可有 label,tone,dashed,direction(none/forward/both)。tone=network藍/active青綠/remote琥珀/default灰/blocked紅；實體連線用 none。保留所有真實設備、分支及邏輯流，不以構圖模板編造關係。"""
         await self._status(__event_emitter__, "正在繪製技術架構圖…")
+        diagram = None
         try:
             family = self._clean(visual_family, 20).lower()
             style = self._STYLE_BY_FAMILY.get(family, 3)
@@ -644,33 +770,46 @@ class Tools:
             svg = output_dir / f"{token}.svg"
             png = output_dir / f"{token}.png"
             preview = output_dir / f"{token}.html"
-            source.write_text(json.dumps(diagram, ensure_ascii=False), encoding="utf-8")
             command = [sys.executable, str(runtime / "scripts/fireworks.py"), "render", "architecture", str(source), str(svg)]
-            result = await asyncio.to_thread(subprocess.run, command, capture_output=True, text=True, timeout=35)
-            fallback=False
-            if result.returncode and diagram['layout']!='layered' and 'COMPOSITION_QUALITY' in (result.stderr+result.stdout):
-                # Keep every engineering relationship and the same quality
-                # gates; retry geometry once, never hide crossings by deletion.
-                await self._status(__event_emitter__,'正在調整走線，保留所有設備與連線…')
-                diagram=self._layout(self._clean(title,72) or '技術架構圖',self._clean(subtitle,132),nodes,edges,groups or [],style,'layered')
-                source.write_text(json.dumps(diagram,ensure_ascii=False),encoding='utf-8')
-                result=await asyncio.to_thread(subprocess.run,command,capture_output=True,text=True,timeout=35)
-                fallback=True
+            original=diagram;attempts=[];deadline=time.monotonic()+24
+            layouts=list(dict.fromkeys([diagram['layout'],'star','layered','dataflow']))
+            choices=[*layouts,'connection_views']
+            for candidate in choices:
+                if candidate!='connection_views' and attempts and time.monotonic()>=deadline:continue
+                if attempts:await self._status(__event_emitter__,'正在重新安排連線，保留全部設備與關係…')
+                diagram=self._connection_views(original) if candidate=='connection_views' else (
+                    original if candidate==original['layout'] else self._layout(self._clean(title,72) or '技術架構圖',
+                        self._clean(subtitle,132),nodes,edges,groups or [],style,candidate))
+                # Fireworks' temporary node boxes are replaced below by our
+                # fully wrapped cards. Audit final card text, not the
+                # intermediate generator's single-line placeholder text.
+                intermediate={k:v for k,v in diagram.items() if not k.startswith('_')}
+                intermediate['text_policy']='report'
+                source.write_text(json.dumps(intermediate,ensure_ascii=False),encoding='utf-8')
+                started=time.monotonic()
+                try:
+                    result=await asyncio.to_thread(subprocess.run,command,capture_output=True,text=True,
+                        timeout=10 if candidate=='connection_views' else min(8,max(1,deadline-time.monotonic())))
+                    failure=(result.stderr or result.stdout or 'Geometry renderer failed') if result.returncode else ''
+                    if not failure and svg.is_file():
+                        svg.write_text(self._final_svg(svg.read_text(encoding='utf-8'),diagram),encoding='utf-8')
+                        # The generator routes edges in sequence: a later
+                        # route can invalidate an earlier label's clearance.
+                        # Check the complete decorated SVG, not only its draft.
+                        checked=await asyncio.to_thread(subprocess.run,
+                            [sys.executable,str(runtime/'scripts/fireworks.py'),'check',str(svg)],
+                            capture_output=True,text=True,timeout=8)
+                        if checked.returncode:failure=checked.stderr or checked.stdout or 'Final SVG validation failed'
+                except subprocess.TimeoutExpired:
+                    failure='Geometry attempt exceeded its time budget'
+                except ValueError as error:
+                    failure=str(error)
+                attempts.append({'layout':candidate,'error':failure[:1500],'seconds':round(time.monotonic()-started,3)})
+                if not failure and svg.is_file():break
+            else:raise RuntimeError('Geometry recovery failed: '+attempts[-1]['error'])
+            fallback=diagram['layout']!=original['layout']
             source.unlink(missing_ok=True)
-            if result.returncode != 0 or not svg.is_file():
-                raise RuntimeError((result.stderr or result.stdout or "Fireworks renderer failed").strip()[:500])
-            # Cairo's toy font API does not perform per-glyph fallback through
-            # CSS stacks. Put an installed CJK family first for Traditional Chinese.
-            font = os.environ.get("OPENWEBUI_DIAGRAM_FONT") or (
-                "PingFang TC" if sys.platform == "darwin" else
-                "Microsoft JhengHei" if sys.platform == "win32" else "Noto Sans CJK TC"
-            )
-            svg_text = svg.read_text(encoding="utf-8")
-            svg_text = re.sub(r"font-family:[^;}]+", f"font-family: '{font}'", svg_text)
-            # Tone-filled nodes are dark even in the light template families.
-            svg_text = svg_text.replace("</style>", ".node-title { fill: #F8FAFC; } .node-sub { fill: #CBD5E1; }</style>")
-            svg_text = self._decorate_svg(svg_text, diagram)
-            svg.write_text(svg_text, encoding="utf-8")
+            semantic=self._semantic_graph(diagram)
             # Mobile WebViews and a few Open WebUI markdown renderers do not
             # display SVG image URLs reliably even though the server returns
             # 200.  Keep the editable SVG, but make the conversation use a
@@ -696,25 +835,42 @@ class Tools:
                 [sys.executable, str(runtime / "scripts/fireworks.py"), "export-html", str(svg), str(preview)],
                 capture_output=True, text=True, timeout=30)
             preview_url = f"/static/openwebui-generated/fireworks/{preview.name}" if html_result.returncode == 0 and preview.is_file() else ""
-            await self._status(__event_emitter__, "架構圖完成", done=True, hidden=True)
-            if __event_emitter__:
-                await __event_emitter__({"type": "files", "data": {"files": [
-                    {"type": "file", "name": f"{self._clean(title, 48) or 'architecture'}.png", "url": url},
-                    {"type": "file", "name": f"{self._clean(title, 48) or 'architecture'}.svg", "url": svg_url},
-                ]}})
-            artifact = f"![{self._clean(title, 72) or '技術架構圖'}]({url})\n\n[下載 PNG]({url}) · [下載可編輯 SVG]({svg_url})"
+            alt=re.sub(r'[\[\]\\]','',self._clean(title,72)) or '技術架構圖'
+            artifact = f"![{alt}]({url})\n\n[下載 PNG]({url}) · [下載可編輯 SVG]({svg_url})"
             if preview_url:
                 artifact += f" · [放大互動預覽]({preview_url})"
             artifact += ' · [圖示來源／授權](/static/architecture-icons/v2/NOTICE.html)'
             if fallback:
-                artifact += '\n\n此拓撲改採分層構圖以避免連線交叉；原有設備與連線均保留。'
+                artifact += ('\n\n此圖採連線分解檢視；相同 N 編號代表同一設備，全部原始連線與方向均保留。' if diagram['layout']=='connection_views'
+                    else '\n\n已依連線自動調整構圖；原有設備、群組與連線均保留。')
+            try:
+                (output_dir/(token+'.report.json')).write_text(json.dumps({'layout':diagram['layout'],
+                    'nodes':len(semantic['nodes']),'edges':len(semantic['edges']),
+                    'attempts':[{**a,'error':bool(a['error'])} for a in attempts],
+                    'text_complete':True,'png_bytes':png.stat().st_size},ensure_ascii=False),encoding='utf-8')
+            except OSError:pass  # An optional diagnostic is not a rendering dependency.
             if __request__ is not None:
                 state = getattr(__request__.state, "fireworks_diagram", None)
                 if state is not None:
                     state["artifact"] = artifact
                     state.setdefault("architecture_artifacts", []).append(artifact)
+            await self._status(__event_emitter__, "架構圖完成", done=True, hidden=True)
+            if __event_emitter__:
+                try:
+                    await __event_emitter__({'type':'files','data':{'files':[
+                        {'type':'file','name':alt+'.png','url':url},{'type':'file','name':alt+'.svg','url':svg_url}]}})
+                except Exception:pass
             return artifact
         except Exception as error:
+            # Keep bounded normalized geometry privately for a reproducible
+            # failure, not in the public static directory or model context.
+            if diagram is not None and os.environ.get('DATA_DIR'):
+                try:
+                    folder=Path(os.environ['DATA_DIR'])/'visual-profile/render-failures'
+                    folder.mkdir(parents=True,exist_ok=True)
+                    (folder/(str(time.time_ns())+'.json')).write_text(json.dumps({
+                        'error':str(error)[:2000],'diagram':diagram},ensure_ascii=False),encoding='utf-8')
+                except OSError:pass  # Diagnostics must not hide the real error.
             await self._status(__event_emitter__, "架構圖產生失敗", done=True)
             return f"Fireworks 架構圖未能產生：{self._clean(error, 280)}。請改以簡短文字說明，勿輸出繪圖程式碼。"
 

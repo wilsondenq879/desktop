@@ -89,7 +89,7 @@ tool=api('/api/v1/tools/id/openwebui_fireworks_renderer')
 assert {s['name'] for s in tool['specs']}=={'render_technical_architecture','render_data_chart','search_diagram_assets'}
 spec=next(s for s in tool['specs'] if s['name']=='render_data_chart')
 assert 'options' in spec['parameters']['properties']
-assert 'version: 6.1.0' in tool['content']
+assert 'version: 6.2.0' in tool['content']
 guard=api('/api/v1/functions/id/openwebui_visual_diagram_guard')
 assert guard.get('is_active') and guard.get('is_global')
 for file in ['preview.html','gantt.png','radar.svg','gantt.html','catalog.json']:

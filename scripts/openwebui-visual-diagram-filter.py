@@ -1,7 +1,7 @@
 """
 title: Fireworks 技術圖表守門員
 description: 伺服器 Renderer、請求隔離的串流緩衝，以及 content/output 一致的成品回覆。
-version: 13.0.0
+version: 13.2.0
 """
 
 import importlib.util
@@ -241,7 +241,7 @@ data_kind 必填：使用者提供 user_provided、引用 reported、實測 meas
             __request__.state.fireworks_diagram = {"chunks": [], "size": 0, "mode":"chart" if chart else "architecture", "architecture_requested":architecture,"report":report,"mixed":chart and architecture,"intro":"", "pending":"", "preview_blocked":False, "started":time.monotonic(), "model":body.get("model"), "source_text":text}
             if (not chart or body.get('model') in self._STRUCTURED_MODELS) and __user__ and __user__.get("id"):
                 try:
-                    preface, usage = await asyncio.wait_for(self._generate_preface(body, text, __request__, __user__), timeout=8)
+                    preface, usage = await asyncio.wait_for(self._generate_preface(body, text, __request__, __user__), timeout=3)
                     state = __request__.state.fireworks_diagram
                     state["intro"], state["prelude"] = preface, preface
                     state["preface_usage"] = usage
@@ -250,6 +250,15 @@ data_kind 必填：使用者提供 user_provided、引用 reported、實測 meas
                 except Exception as error:
                     # A slow/missing provider must not prevent the main answer.
                     logging.getLogger(__name__).warning("Architecture preface unavailable (%s)", type(error).__name__)
+                state=__request__.state.fireworks_diagram
+                if not state.get('prelude'):
+                    # Cold models can miss even a short prose pass. Ground
+                    # the early text in literal entities, not invented facts,
+                    # and never leave data-only planning looking like a hang.
+                    entities=list(dict.fromkeys(re.findall(r'(?:[一二三四五六七八九兩\d]+台\s*)?(?:ASUS\s*GX10|DGX\s*Spark|(?:GPU|AI)\s*工作站|(?:25G|10G)\s*(?:SFP28\s*)?交換[機器]|管理電腦|NVMe\s*儲存|儲存設備|NAS|VPN|MCP|API)',text,re.I)))
+                    preface=('先整理本題的'+ '、'.join(entities[:8]) if entities else '先依你提供的元件與層級整理架構')+'，再分開標示資料與控制關係；未提供的規格或效能不會臆測。\n\n'
+                    if chart:preface='先整理本題提供的數值、單位與比較條件，再套用圖表；不把規格上限當成實測，也不補造缺少的數據。\n\n'
+                    state['intro']=state['prelude']=preface
         # Data-only schema is appropriate for a single visual, never for a
         # full report or architecture+statistics request: it loses half the task.
         structured = body.get("model") in self._STRUCTURED_MODELS and not report and not (chart and architecture)
@@ -672,7 +681,7 @@ data_kind 必填：使用者提供 user_provided、引用 reported、實測 meas
                 for url in re.findall(r"\]\(([^)]+)\)", artifact):
                     prose = re.sub(r"!?\[[^\]]*\]\("+re.escape(url)+r"\)", "", prose)
             if not artifacts:
-                failure=render_error or '本次圖表未完成：模型未提供符合樣板的有效資料；不會編造數值、補零或顯示假成品。'
+                failure=state.get('architecture_error') or render_error or '本次圖表未完成：模型未提供符合樣板的有效資料；不會編造數值、補零或顯示假成品。'
                 prose='\n\n'.join(p for p in [prose.strip(),failure] if p)
             elif architecture and not architecture_results:
                 prose+='\n\n架構圖未完成：未取得有效設備與連線；以上數值圖不代表架構圖已完成。'

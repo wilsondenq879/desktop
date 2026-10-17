@@ -41,6 +41,11 @@ async def main():
     await short_guard.inlet({"model":"test","messages":[{"role":"user","content":"畫架構圖"}]}, req3, __user__={"id":"test"})
     first = short_guard.stream({"choices":[{"delta":{}}]}, req3)
     assert "交換器作為中心" in first["choices"][0]["delta"]["content"]
+    async def empty_pass(*args):return '',None
+    short_guard._generate_preface=empty_pass
+    cold=SimpleNamespace(state=SimpleNamespace())
+    await short_guard.inlet({'model':'test','messages':[{'role':'user','content':'畫兩台GPU工作站連接25G交換機架構圖'}]},cold,__user__={'id':'test'})
+    assert '兩台GPU工作站' in cold.state.fireworks_diagram['prelude'] and '25G交換機' in cold.state.fireworks_diagram['prelude']
     second = short_guard.stream({"choices":[{"delta":{}}]}, req3)
     assert "交換器作為中心" not in second["choices"][0]["delta"].get("content", "")
     structured = {"model":"gemma4:26b-mlx","tool_ids":["openwebui_fireworks_renderer"],"messages":[{"role":"system","content":"old tool instructions"},{"role":"user","content":"請繪製 ASUS AI 階層圖"}]}

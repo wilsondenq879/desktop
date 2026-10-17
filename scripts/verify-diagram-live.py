@@ -1,5 +1,6 @@
 """Exercise the actual authenticated chat endpoint, without a desktop session."""
 import argparse
+import atexit
 import json
 import re
 import sqlite3
@@ -61,6 +62,13 @@ else:
     chat.raise_for_status()
     chat_id=chat.json()["id"]
     payload["chat_id"]=chat_id
+    def archive_synthetic():
+        try:
+            current=session.get(base+'/api/v1/chats/'+chat_id,timeout=10)
+            if current.ok and not current.json().get('archived'):
+                session.post(base+'/api/v1/chats/'+chat_id+'/archive',timeout=10).raise_for_status()
+        except requests.RequestException:pass
+    atexit.register(archive_synthetic)
 payload.update({"id":aid,"messages":[{"role":"user","content":prompt}], "user_message":{"id":uid,"role":"user","content":prompt,"parentId":None,"childrenIds":[aid]}})
 socket = None
 stream_observations = []
@@ -178,8 +186,8 @@ while time.monotonic()<deadline:
         actual=loaded.json()["chat"]["history"]["messages"][aid]
         assert actual["content"]==content and actual["output"]==output
         print(json.dumps({"ok":True,"chat_id":chat_id,"artifact":match[1],"png_bytes":len(image.content),"no_code_streamed":not seen_code,"content_output_identical":True,"reload_verified":True},ensure_ascii=False),flush=True)
-        if not args.chat:
-            session.post(base+"/api/v1/chats/"+chat_id+"/archive",timeout=30).raise_for_status()
+        # The exit handler also archives a failed synthetic regression, so
+        # test failures never become the user's apparent latest conversation.
         if socket:
             socket.disconnect()
         break
