@@ -1,0 +1,312 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* OpenWebUICompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* OpenWebUICompanionApp.swift */; };
+		A10000000000000000000002 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* AppStore.swift */; };
+		A10000000000000000000003 /* AppModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* AppModels.swift */; };
+		A10000000000000000000004 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* KeychainStore.swift */; };
+		A10000000000000000000005 /* OpenWebUIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000005 /* OpenWebUIClient.swift */; };
+		A10000000000000000000006 /* DesktopCompanionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* DesktopCompanionClient.swift */; };
+		A10000000000000000000007 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* RootView.swift */; };
+		A10000000000000000000008 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* LoginView.swift */; };
+		A10000000000000000000009 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000009 /* ChatView.swift */; };
+		A1000000000000000000000A /* ProjectsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000A /* ProjectsView.swift */; };
+		A1000000000000000000000B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000B /* SettingsView.swift */; };
+		A1000000000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000E /* Assets.xcassets */; };
+		A1000000000000000000000D /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000F /* AppTheme.swift */; };
+		A1000000000000000000000E /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000010 /* CanvasView.swift */; };
+		A1000000000000000000000F /* QRCodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000011 /* QRCodeScannerView.swift */; };
+		A10000000000000000000010 /* MarkdownMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000012 /* MarkdownMessageView.swift */; };
+		A10000000000000000000011 /* OpenWebUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000013 /* OpenWebUIWebView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B10000000000000000000001 /* OpenWebUICompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWebUICompanionApp.swift; sourceTree = "<group>"; };
+		B10000000000000000000002 /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		B10000000000000000000003 /* AppModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModels.swift; sourceTree = "<group>"; };
+		B10000000000000000000004 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		B10000000000000000000005 /* OpenWebUIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWebUIClient.swift; sourceTree = "<group>"; };
+		B10000000000000000000006 /* DesktopCompanionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopCompanionClient.swift; sourceTree = "<group>"; };
+		B10000000000000000000007 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		B10000000000000000000008 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		B10000000000000000000009 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000A /* ProjectsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectsView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1000000000000000000000D /* OpenWebUICompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenWebUICompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1000000000000000000000E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B1000000000000000000000F /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		B10000000000000000000010 /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
+		B10000000000000000000011 /* QRCodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerView.swift; sourceTree = "<group>"; };
+		B10000000000000000000012 /* MarkdownMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownMessageView.swift; sourceTree = "<group>"; };
+		B10000000000000000000013 /* OpenWebUIWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWebUIWebView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C10000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D10000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				D10000000000000000000002 /* OpenWebUICompanion */,
+				D10000000000000000000007 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D10000000000000000000002 /* OpenWebUICompanion */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000001 /* OpenWebUICompanionApp.swift */,
+				B10000000000000000000002 /* AppStore.swift */,
+				B1000000000000000000000F /* AppTheme.swift */,
+				D10000000000000000000003 /* Models */,
+				D10000000000000000000004 /* Services */,
+				D10000000000000000000005 /* Views */,
+				D10000000000000000000006 /* Resources */,
+				B1000000000000000000000E /* Assets.xcassets */,
+				B1000000000000000000000C /* Info.plist */,
+			);
+			path = OpenWebUICompanion;
+			sourceTree = "<group>";
+		};
+		D10000000000000000000003 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000003 /* AppModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D10000000000000000000004 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000004 /* KeychainStore.swift */,
+				B10000000000000000000005 /* OpenWebUIClient.swift */,
+				B10000000000000000000006 /* DesktopCompanionClient.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D10000000000000000000005 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000007 /* RootView.swift */,
+				B10000000000000000000008 /* LoginView.swift */,
+				B10000000000000000000009 /* ChatView.swift */,
+				B1000000000000000000000A /* ProjectsView.swift */,
+				B1000000000000000000000B /* SettingsView.swift */,
+				B10000000000000000000010 /* CanvasView.swift */,
+				B10000000000000000000011 /* QRCodeScannerView.swift */,
+				B10000000000000000000012 /* MarkdownMessageView.swift */,
+				B10000000000000000000013 /* OpenWebUIWebView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D10000000000000000000006 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D10000000000000000000007 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B1000000000000000000000D /* OpenWebUICompanion.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E10000000000000000000001 /* OpenWebUICompanion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E10000000000000000000004 /* Build configuration list for PBXNativeTarget "OpenWebUICompanion" */;
+			buildPhases = (
+				E10000000000000000000002 /* Sources */,
+				C10000000000000000000001 /* Frameworks */,
+				E10000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenWebUICompanion;
+			productName = OpenWebUICompanion;
+			productReference = B1000000000000000000000D /* OpenWebUICompanion.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E10000000000000000000005 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					E10000000000000000000001 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+				};
+			};
+			buildConfigurationList = E10000000000000000000006 /* Build configuration list for PBXProject "OpenWebUICompanion" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				"zh-Hant",
+				Base,
+			);
+			mainGroup = D10000000000000000000001;
+			productRefGroup = D10000000000000000000007 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E10000000000000000000001 /* OpenWebUICompanion */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E10000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000000C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E10000000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* OpenWebUICompanionApp.swift in Sources */,
+				A10000000000000000000002 /* AppStore.swift in Sources */,
+				A10000000000000000000003 /* AppModels.swift in Sources */,
+				A10000000000000000000004 /* KeychainStore.swift in Sources */,
+				A10000000000000000000005 /* OpenWebUIClient.swift in Sources */,
+				A10000000000000000000006 /* DesktopCompanionClient.swift in Sources */,
+				A10000000000000000000007 /* RootView.swift in Sources */,
+				A10000000000000000000008 /* LoginView.swift in Sources */,
+				A10000000000000000000009 /* ChatView.swift in Sources */,
+				A1000000000000000000000A /* ProjectsView.swift in Sources */,
+				A1000000000000000000000B /* SettingsView.swift in Sources */,
+				A1000000000000000000000D /* AppTheme.swift in Sources */,
+				A1000000000000000000000E /* CanvasView.swift in Sources */,
+				A1000000000000000000000F /* QRCodeScannerView.swift in Sources */,
+				A10000000000000000000010 /* MarkdownMessageView.swift in Sources */,
+				A10000000000000000000011 /* OpenWebUIWebView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F10000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D6PXFLB37A;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = OpenWebUICompanion/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openwebui.companion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F10000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D6PXFLB37A;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = OpenWebUICompanion/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openwebui.companion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F10000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F10000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E10000000000000000000004 /* Build configuration list for PBXNativeTarget "OpenWebUICompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F10000000000000000000001 /* Debug */,
+				F10000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E10000000000000000000006 /* Build configuration list for PBXProject "OpenWebUICompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F10000000000000000000003 /* Debug */,
+				F10000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E10000000000000000000005 /* Project object */;
+}

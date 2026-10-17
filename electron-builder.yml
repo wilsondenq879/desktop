@@ -4,6 +4,13 @@ directories:
   buildResources: build
 files:
   - '!**/.vscode/*'
+  - '!dist*/**'
+  - '!deliverables/**'
+  - '!ios/**'
+  - '!scripts/**'
+  - '!tools/**'
+  - '!docs/**'
+  - '!resources/**'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!svelte.config.mjs'
@@ -11,8 +18,18 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 extraResources:
+  - from: resources/openwebui-server-profile
+    to: openwebui-server-profile
   - from: CHANGELOG.md
     to: CHANGELOG.md
+  - from: resources/openwebui-skills.json
+    to: openwebui-skills.json
+  - from: resources/openwebui-managed-skills/fireworks-tech-graph
+    to: openwebui-skill-runtimes/fireworks-tech-graph
+  # Ship the dependency-free ASUSWRT MCP helper with both the installer and
+  # portable build. It is configured from Open WebUI's MCP settings at runtime.
+  - from: tools/asuswrt-mcp
+    to: tools/asuswrt-mcp
 asarUnpack:
   - resources/**
   - node_modules/node-pty/**
@@ -83,8 +100,11 @@ flatpak:
     - --filesystem=home
     - --talk-name=org.freedesktop.Notifications
     - --talk-name=org.freedesktop.portal.Desktop
-npmRebuild: true
+# node-pty 1.1 ships Node-API prebuilds for Windows and macOS. Rebuilding it
+# during packaging makes Windows artifacts impossible to produce on macOS and
+# is unnecessary for the bundled prebuilds.
+npmRebuild: false
 publish:
   provider: github
-  owner: open-webui
+  owner: wilsondenq879
   repo: desktop

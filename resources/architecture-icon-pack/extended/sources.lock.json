@@ -1,0 +1,4945 @@
+{
+  "providers": {
+    "lucide": {
+      "package": "lucide-static",
+      "version": "1.59.0",
+      "license": "ISC",
+      "source": "https://github.com/lucide-icons/lucide",
+      "integrity": "sha512-MuHZYaXbHgzN2QO6D3OM19bj09A+8GJiFSdXIMlbnLLEGQQ9+NRH2KaCxuivevD3Y23vM74kV17XBifgtqhfEg==",
+      "url": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.59.0.tgz",
+      "icons": 2159
+    },
+    "simple": {
+      "package": "simple-icons",
+      "version": "16.35.0",
+      "license": "CC0-1.0",
+      "source": "https://github.com/simple-icons/simple-icons",
+      "integrity": "sha512-TCfl/2+GTrx0nCo4pEWGvxhOb8c6NsqOU1OpwjtF4lwJAthB8IYVD0fuIMjLMg6JFuG1YBO0t1iETQqJLqkoJA==",
+      "url": "https://registry.npmjs.org/simple-icons/-/simple-icons-16.35.0.tgz",
+      "icons": 3466
+    },
+    "lobe": {
+      "package": "@lobehub/icons-static-svg",
+      "version": "1.95.1",
+      "license": "MIT",
+      "source": "https://github.com/lobehub/lobe-icons",
+      "integrity": "sha512-Hw7EPPgVnC4NZLXBfTNJG6hyQgqECfUPC11VVXodPSr1aebKcFxDZlSpxhWwYNdCc6bhxps/x5TtXoPmfKH2ag==",
+      "url": "https://registry.npmjs.org/@lobehub/icons-static-svg/-/icons-static-svg-1.95.1.tgz",
+      "icons": 948
+    },
+    "dashboard": {
+      "version": "6d31345986eba2067a63eb41c1a5a87d4e8e850a",
+      "license": "Apache-2.0",
+      "source": "https://github.com/homarr-labs/dashboard-icons",
+      "commit": "6d31345986eba2067a63eb41c1a5a87d4e8e850a",
+      "icons": 2654
+    }
+  },
+  "rejected": [
+    [
+      "lobe",
+      "icons/antigravity-color.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "lobe",
+      "icons/lobehub-color.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/1337x.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/20i-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/20i.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/2fauth-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/2fauth.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/3cx-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/3cx.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/4chan.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/5etools-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/5etools.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/7zip.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/9router.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/aboard.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/acars-hub.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/acme.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/actual-budget.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/adguard-home-sync.svg",
+      "Unsupported SVG element: path-effect"
+    ],
+    [
+      "dashboard",
+      "svg/adobe-indesign.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/adobe.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/advanzia.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/adventure-log.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/agent-of-empires.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/ai-on-the-edge-device.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/akamai.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/alexa.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/aliexpress.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/aliyun.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/alma-linux.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/amazon-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/amazon-prime.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/amazon-web-services-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/amazon-web-services.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/amazon.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/anaconda.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/anchor.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/anonaddy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/anytype.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/apache-iceberg.svg",
+      "Unsupported SVG element: export"
+    ],
+    [
+      "dashboard",
+      "svg/apache-jena-wordmark-light.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/appflowy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/appwrite.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ara-records-ansible.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/arcane.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/archivebox.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/argo-cd.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/arrow-electronics-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/artifacthub.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/asciinema.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/asrock-rack-ipmi.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/asrock-rack.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/associated-press.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/astral.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/astrbot.svg",
+      "Unsupported SVG element: foreignObject"
+    ],
+    [
+      "dashboard",
+      "svg/asus-rog.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/atuin-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/audiobookshelf.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/audora.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/aurral.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/authentik.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/authman.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/avif.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/avigilon.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/aws-ecs.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/aws-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/aws.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/awx.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/axis.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/azuracast.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/backrest-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/backrest-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/backrest.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/backstage-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/backstage-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/backstage.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/basecamp-5.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/baserow.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/bazecor.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/be-quiet.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/beaver-habit-tracker-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/beaver-habit-tracker.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/beetstreamnext-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/beetstreamnext-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/beetstreamnext.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/behance.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/binner-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/binner.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/bitly-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/bleacher-nation-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/bleacher-nation.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/blocky.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/boeing.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/boltnew.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/bonfire.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/booklogr-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/booklogr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/booko.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/bootstrap.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/borg-ui-dark.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/bottom-dark.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/bottom.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/boundary.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/br.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/brave.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/budgetbee-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/budgetbee.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/buildium.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/bunny.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/buzz.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cabernet.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cachyos-linux.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/caddy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/calibre.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/carousell.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/castopod.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cd-light.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/cert-manager.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/changedetection.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/channels-dvr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/chaptarr.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/chatplaygroundai-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/chatplaygroundai-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/chatplaygroundai.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/chipsound.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/chroma.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/chrome-canary.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/chrome-dev.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/chrome-devtools.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/chrome-remote-desktop.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/ciphermail.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/citrix.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/claude-ai-dark.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/claude-ai-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/cleanuperr-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/cleanuperr-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/clickup.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cloud-native-pg-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cloud-native-pg.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cloudbeaver.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cloudflare-zero-trust.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cloudreve.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/cms.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/code.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/conduyt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/confluent-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/confluent-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/confluent.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/contabo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cooler-control.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/copyparty.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/copyq.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/coredns.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cosign.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cosmic.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/cronmaster-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cronmaster-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cronmaster.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crossplane-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crossplane.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crowdsec.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crowdstrike-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crowdstrike-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crowdstrike-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crowdstrike-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/crowdstrike.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cryptpad.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/cyberchef.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/czkawka.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/d-link.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dalibo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dall-e-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/dart.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/data-studio.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dawarich.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dc-os.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/dcmi.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/ddev-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ddev.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ddns-updater.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/debian-linux.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/deepseek.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/deezer.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dependency-track-wordmark-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/dependency-track-wordmark-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/dependency-track.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/dia.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/digital-ocean.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/digitelstudios-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/digitelstudios.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/directus.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/distribution.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dockhand-svg.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docling.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docsify.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/docspell.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/documenso.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docusaurus.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docuseal.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docusign-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docusign-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docusign-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/docusign.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/doozle.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/doplarr.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/double-commander.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/dozzle.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/draw-io.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/duckdns-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/duckdns.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/duckduckgo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dufs.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/dumbpad.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/duplicati.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/dymo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/e-os-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/easy-gate-light.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/easy-gate.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/edge-dev.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/elabftw.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/electrum.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/eleven-labs-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/elysian.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/emeraldhost-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/emeraldhost-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/emeraldhost-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/emeraldhost-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/emeraldhost.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/emulatorjs.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/enclosed-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/enclosed.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/endeavouros-linux.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/enterr.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/epic-games-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/epic-games.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/esphome.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/espocrm.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/espressif.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/etesync.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/etherpad.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/euquista-wordmark-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/euquista.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/f-droid.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/f4map.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fairphone-wordmark-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/falcon-player.svg",
+      "Unsupported SVG element: script"
+    ],
+    [
+      "dashboard",
+      "svg/fast-com-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fast-com.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fastapi-wordmark-light.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/fenrus-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fenrus.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ferretdb.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fidelity.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fider.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/figma.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/filebrowser.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/files-community.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/findroid.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/firefly-iii.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/firefly.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/firefox-beta.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/firefox-reality.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/firewalla.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fit-dashboard.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fittrackee.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fladder.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/flaresolverr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/flatcar.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/flathub-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/flathub.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/floorp.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/flowise.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/fluent-reader.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fluffychat-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fluffychat.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/flutter-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/flutter-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/flutter.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/foldingathome.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/font-awesome-icons.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/foreflight-dark.svg",
+      "Nonstandard namespaced or styled id"
+    ],
+    [
+      "dashboard",
+      "svg/foreflight.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/forgejo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/formbricks.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/franz.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/freecad-light.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/freecad.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/freedom.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/freenom.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/freepbx.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/freshbooks.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/freshrss.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/froxlor.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/fulcio.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/funkwhale-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/funkwhale.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fusionauth-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/fusionauth.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/garage.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/garuda-linux.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/gboard.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ghostty.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/gimp.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gis-shapefile.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gitbucket.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/gitea.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gitlab.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gitsign.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gladys-assistant.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/glances-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/glances.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/glinet-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/glinet.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/glpi.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gluetun.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/gnu-guix.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/gnustep-dark.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/gnustep.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/go.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/goaccess-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/goaccess.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/goldilocks.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gollum.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/gomft.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/google-analytics.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/google-cloud-print.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/google-contacts.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/google-find.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/google-gemini.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/google-jules.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/google-pay.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/google-tag-manager.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/google-tasks.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/google-voice.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gopeed.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/gordi.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/gotify.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gotosocial.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/gramps.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/grandstream.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/grav-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/grav.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/graywolf.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/greenbone-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/greenbone.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/grimoire.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/grist.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/haproxy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/harbor.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/harvester.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hashicorp-boundary.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hashicorp-consul.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hbo-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hbo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hcl-verse.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/headscale.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/healarr.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/hedgedoc.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hemmelig-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hemmelig.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hermes-agent-alt-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/hermes-agent-alt.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/heylogin.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/hifiberry.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hilook.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hivedav.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/homey.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/honda-jet.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hubitat.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/huginn.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hypermind.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hyperpipe-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hyperpipe.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/hyprland.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/i2pd.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ical.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/icewarp.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/icinga-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/icinga.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/icon.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/iliadbox-svg.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/immich-kiosk-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/immich-public-proxy.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/infisical.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/infomaniak-euria.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/infomaniak-kdrive-dark.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/infomaniak-kdrive-light.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/infomaniak-swisstransfer-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/infomaniak-swisstransfer-light.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/infor-xa.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/inventree.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/iobroker.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/issabel-pbx-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/issabel-pbx-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/issabel-pbx-wordmark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/issabel-pbx.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/itad.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/italki.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/jaeger.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/jan.svg",
+      "Unsupported SVG element: pattern"
+    ],
+    [
+      "dashboard",
+      "svg/jdownloader.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/jdownloader2.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/jekyll.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/jellyfin-vue.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/jellyglance.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/jellystat-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/jellystat.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/jellywatch.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/jenkins.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/joplin.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/jumpserver.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/jupyter.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kamatera.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kanidm.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/kaseya.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/kavita.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kestra.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/keycloak.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/keyoxide-alt.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/keyoxide.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/kimi-ai.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kirby-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/kirby-wordmark-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/kitchenowl.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/kleopatra.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/knx.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/kodi.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/koito.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/komga.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/komodo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kong-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kong-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kong-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kong-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kong.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/konica-minolta.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/kook.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/koreader.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/krakend.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/krokiet.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/kubeflow.svg",
+      "External paint reference"
+    ],
+    [
+      "dashboard",
+      "svg/kutt.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/kyverno-wordmark-light.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/kyverno.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/lakefs.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/lancommander-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/lancommander.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/lastpass.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/leantime.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/lemmy-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/lemmy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/lets-encrypt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/level-io.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/librariarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/libredb-studio.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/libreoffice-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/libreoffice.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/librespeed-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/librespeed.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/libretranslate-dark.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/libretranslate.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/librewolf.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/limesurvey.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/linguacafe.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/linkding.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/linux.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/linuxdo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/liremdb.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/listenbrainz.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/livebook.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/lodestone.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/logseq.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/longhorn.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/lovable-wordmark-dark.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/lovable-wordmark-light.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/lovable.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/luxriot.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/mail-in-a-box.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mailcow.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mailfence.svg",
+      "Unsupported SVG element: a"
+    ],
+    [
+      "dashboard",
+      "svg/maintainerr.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/manyfold.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/mapcomplete.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/mariadb.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/marimo.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/matomo.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/mattermost.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/may.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/mealie.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/media-manager.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/mediathekview.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/mediawiki.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/memos.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/mercusys.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/met-office-uk.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/metabase.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/metabrainz.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/metallb.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-access.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-dataverse.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-excel.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-office.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-onenote.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-outlook.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-power-automate.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-powerpoint.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-project.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-sharepoint.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-visio.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/microsoft-word.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mila.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/milinote.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/missionheroz.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/mistral-ai.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/mlb-tv.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mobilizon-logo-wordmark-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/mobilizon-logo.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/mobioffice.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mongo-express.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/monica-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/monica.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/morphos.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/motioneye-dark.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/motioneye.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/mstream.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mubi-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/mubi.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/multi-scrobbler.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mumble-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mumble.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mundraub.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/music-assistant.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/musicbrainz-picard.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/myheats-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/myheats.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mylar-3.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mysterium.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/mythtv.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/namecheap.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/nasa.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/natwest.svg",
+      "Unsupported SVG element: pattern"
+    ],
+    [
+      "dashboard",
+      "svg/navidrome-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/navidrome.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/neocities.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/neon-tech.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/netalertx-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/netalertx.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/netbird.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/netbootxyz.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/netflix.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/netgear-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/netgear.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/newshosting-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/nextbike-dark.svg",
+      "Unsupported SVG element: color-profile"
+    ],
+    [
+      "dashboard",
+      "svg/nextbike-light.svg",
+      "Unsupported SVG element: color-profile"
+    ],
+    [
+      "dashboard",
+      "svg/nextbike-wordmark-dark.svg",
+      "Unsupported SVG element: color-profile"
+    ],
+    [
+      "dashboard",
+      "svg/nextbike-wordmark-light.svg",
+      "Unsupported SVG element: color-profile"
+    ],
+    [
+      "dashboard",
+      "svg/nextbike.svg",
+      "Unsupported SVG element: color-profile"
+    ],
+    [
+      "dashboard",
+      "svg/nextcloud-ncdownloader.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/nextcloud-timemanager.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/nginx-proxy-manager.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/nintendo-switch.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/niri-wordmark-light.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/niri.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/noisedash.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/nomie.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/novnc.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/nrk-logo-light.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/ntfy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/nzbdav.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/oauth2-proxy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/odysee.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/oepnvmap.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/office-365.svg",
+      "Invalid viewBox"
+    ],
+    [
+      "dashboard",
+      "svg/olivetin-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/olivetin.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ombi.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/omnic-forge-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/omnic-forge.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/oneuptime-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/oneuptime.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/onlyfans-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/onlyfans.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/onshape-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/onshape.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/open-classrooms.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/open-notebook.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/open-regex.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/open-router-dark.svg",
+      "External paint reference"
+    ],
+    [
+      "dashboard",
+      "svg/open-router.svg",
+      "External paint reference"
+    ],
+    [
+      "dashboard",
+      "svg/openbao.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/openclaw-wordmark-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/openclaw-wordmark-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/openclaw.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/opengist-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/opengist.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/opengym.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/openmediavault.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openreads.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openshift-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openshift.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openspeedtest.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openstack.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openstreetmap.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/opentalk.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openuem.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/openvas.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/openwrt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/opnsense.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/osu.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/our-shopping-list.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/owlrelay-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/owlrelay.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/owntone.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/oxker-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/oxker.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/palemoon.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/papermerge-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/papermerge.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/passbolt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/payload-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/payload.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/peanut-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/peanut.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pelagica.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/pepperminty-wiki.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pfsense-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pfsense.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/photostructure-dark.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/photostructure.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/photoview.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/phpmyadmin.svg",
+      "could not convert string to float: '297mm'"
+    ],
+    [
+      "dashboard",
+      "svg/pi-hole.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pigeonpod.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pingvin-share.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pirate-proxy.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/piwigo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/plane.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/planka-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/planka.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pleroma.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/plex-alt-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/plex-alt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/podman.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/polaris-gamestream.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/policycontroller.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/portainer-alt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/portus.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/poste.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/postfix.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/postgresql.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/posthog-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/posthog.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/postmarketos.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/powerbi.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/printables.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/printventory.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/prolific.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/prometheus-node-exporter.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/proton-meet.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/proton-sheets.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/proton-wallet.svg",
+      "External paint reference"
+    ],
+    [
+      "dashboard",
+      "svg/protondb.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/prowlarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/proxmenu.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/prozilla-os-dark.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/prozilla-os-light.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/prozilla-os.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/prusa-research.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pterodactyl.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pulse.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/puppy-linux.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/pure-storage.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-maps-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-maps-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-news-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-news-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-snippets-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-snippets-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-timer-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pvy-timer-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pydio.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/pytorch-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/pytorch-wordmark-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/pytorch.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/qlik2.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/qnap-firewall.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/qnap-qsync.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/qnap-qvr-face.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/qnap-qvr-human.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/questdb.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/quickwit.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/quizlet.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/rackula-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rackula-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rackula.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/radarr-dv.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/radarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/radicale.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/raftman.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/ramp-dark.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/ramp.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/rapid7-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/rapid7-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/rapid7.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/readarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/readeck.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/readwise-reader-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/recalbox.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/receipt-wrangler.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/recyclarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/redhat-linux.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/redict.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rekor.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/reloader.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/remmina.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/remuxcode.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/renovate.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/reolink.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/retrom.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/revanced-manager.svg",
+      "Nonstandard namespaced or styled id"
+    ],
+    [
+      "dashboard",
+      "svg/rhasspy-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rhasspy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rocket-chat.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rockstor-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/rockstor-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rockstor.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/roguemediavalidator-wordmark-dark.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/roguemediavalidator-wordmark-light.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/rook.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/roon.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/root-me-dark.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/root-me.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/roundcube.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rss-translator.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/rutorrent.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/safeline.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/samba-server.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sat-ip-wordmark-light.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/scrcpy.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/searx.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/secureai-tools-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/secureai-tools.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/security-onion-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/security-onion.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/seerr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/selenium.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sendgrid.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/series-troxide.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/servarr-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/servarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/shadow.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/sharewood.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sharry-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/sharry.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/shellhub.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/shellngn.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/shlink.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/shoko-server.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/signaturepdf.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/signoz.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/silo-server-wordmark-light.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/silo-server.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/sinf-uinsa-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sinf-uinsa-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sing-box.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/siyuan.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/slash-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/slash.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/slidev.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/smartfox.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/snapmaker.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/snappymail-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/snappymail.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/snikket.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/softmakerfreeoffice.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/softmakeroffice.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/solarwinds-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/solus.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/sonarr-dv.svg",
+      "Unsupported SVG element: text"
+    ],
+    [
+      "dashboard",
+      "svg/sourcehut-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/sourcehut-wordmark-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/sourcehut-wordmark-light.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/specifically-clementines.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sphinx-doc.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sphinx.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/spinsense.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/spliit.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/spoolman.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/spotify-wordmark-dark.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/spotify-wordmark-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/springboot-initializer.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/sqlite-wordmark-light.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/sqlite.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/squarespace.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/squirrel-servers-manager.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/stalwart-mail-server.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/stalwart.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/startpage-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/statuspage-wordmark-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/statuspage-wordmark-light.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/statuspage.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/steam.svg",
+      "Unsupported SVG element: symbol"
+    ],
+    [
+      "dashboard",
+      "svg/stoat-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/stoat.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/streamyfin.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/streamystats.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/sun-panel.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/supermicro.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/supla.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/surrealdb.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/svg.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/svgomg.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/swarmpit.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/swift.svg",
+      "Invalid viewBox"
+    ],
+    [
+      "dashboard",
+      "svg/swingmusic.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/swiparr.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/sylve.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/symfonium.svg",
+      "Unsupported SVG element: switch"
+    ],
+    [
+      "dashboard",
+      "svg/syncplay.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/syncthing-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/syncthing.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/synology-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/synology.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tailscale-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tailscale.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tandoor-recipes.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tangerine-ui.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tasmocompiler.svg",
+      "Unsupported SVG element: marker"
+    ],
+    [
+      "dashboard",
+      "svg/tasmota-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tasmota.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tdarr-white.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tdarr.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/team-viewer.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/teamarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/teamspeak.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/technitium.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/tekstobot-dark.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/tekstobot-light.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/tekstobot.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/telekom.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/teleport.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tempo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tensorflow-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tensorflow-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tensorflow-wordmark-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tensorflow.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tether-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tether-wordmark-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/the-io-foundation-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/the-io-foundation-wordmark-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/the-io-foundation-wordmark-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/the-io-foundation.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/the-proxy-bay.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/thelounge.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/thin-linc.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/thread-wordmark-dark.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/thread.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/threadfin.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/thunderbird.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/ticky.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/timesketch.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/timetagger-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/timetagger.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ting-isp.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/tiny-media-manager.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/title-card-maker-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/title-card-maker.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/toolz.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/touitomamout.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tracearr.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/traefik-home.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/trakt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/trala.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/transmission.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/trellix-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/trellix.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/truenas-core.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/truenas-scale.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tubesync-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tubesync.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tuliprox.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/tunarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tux.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/tuya-smart-inc-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tuya-smart-inc.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/twake-mail-wordmark-light.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/twake-mail.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/twitch.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/tyepcho-wordmark-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/typemill-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/typemill.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ubuntu-linux.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ugreen.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/uncomplicated-alert-receiver.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/undb.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/university-applied-sciences-brandenburg.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/unreal-engine-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/unreal-engine.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ups.svg",
+      "Unsupported SVG element: symbol"
+    ],
+    [
+      "dashboard",
+      "svg/upsnap.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/valetudo.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/vault-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/vault.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/velero.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/vera-crypt.svg",
+      "Unsupported SVG element: metadata"
+    ],
+    [
+      "dashboard",
+      "svg/verdaccio-dark.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/verdaccio.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/viber.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/victron-energy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/viewtube.svg",
+      "External paint reference"
+    ],
+    [
+      "dashboard",
+      "svg/vikunja.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/vinchin-backup.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/virgin-media.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/virtualbox.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/viseron-light.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/viseron.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/visual-studio-code.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/vito-deploy.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/vllm.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/voidauth.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/vscode.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/vuetorrent.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/waipu-tv.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wakapi.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wanderer-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wanderer.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/watcharr-dark.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/watcharr.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/webmin.svg",
+      "Unsupported SVG element: image"
+    ],
+    [
+      "dashboard",
+      "svg/weibo.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/wero-dark.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wero.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wetransfer-light.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/wetransfer.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/whatseerr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wikijs.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wikimedia-dark.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/wikimedia-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/wikimedia.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/willow.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/windirstat.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/windmill.svg",
+      "Unsupported SVG element: script"
+    ],
+    [
+      "dashboard",
+      "svg/windows-explorer.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/windshift.svg",
+      "Unsupported SVG element: pattern"
+    ],
+    [
+      "dashboard",
+      "svg/wireguard.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wispr-flow-dark.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/wispr-flow-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/wispr-flow-wordmark-dark.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/wispr-flow-wordmark-light.svg",
+      "not well-formed (invalid token): line 1, column 0"
+    ],
+    [
+      "dashboard",
+      "svg/wizarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/woodpecker-ci.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/worklenz.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/wudup.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/xiaomi-global.svg",
+      "Unsafe or oversized SVG"
+    ],
+    [
+      "dashboard",
+      "svg/xigmanas.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/xpipe.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/yac-reader.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/yacht.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/yarr-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/yarr.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/ynab.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/yopass.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/your-spotify.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/yourls.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/youtube-dl.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/youtube-kids.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/youtube-tv.svg",
+      "Unsupported SVG element: namedview"
+    ],
+    [
+      "dashboard",
+      "svg/yt-dlp.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/z-ai.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/z-wave-js-ui.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/zammad.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/zen-browser-dark.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/zen-browser.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/zigbee2mqtt-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/zigbee2mqtt.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/zipline-diced.svg",
+      "Unsupported SVG element: filter"
+    ],
+    [
+      "dashboard",
+      "svg/zitadel-light.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/zitadel.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/zoraxy.svg",
+      "Unsupported SVG element: style"
+    ],
+    [
+      "dashboard",
+      "svg/zot-registry.svg",
+      "Unsupported SVG element: style"
+    ]
+  ]
+}

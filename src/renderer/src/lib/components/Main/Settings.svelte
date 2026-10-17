@@ -6,6 +6,9 @@
   import OpenWebUI from './Settings/OpenWebUI.svelte'
   import Connections from './Settings/Connections.svelte'
   import OpenTerminal from './Settings/OpenTerminal.svelte'
+  import Companion from './Settings/Companion.svelte'
+  import DrawThings from './Settings/DrawThings.svelte'
+  import AsuswrtMcp from './Settings/AsuswrtMcp.svelte'
   import InferenceRuntime from './Settings/InferenceRuntime.svelte'
   import Models from './Settings/Models.svelte'
   import About from './Settings/About.svelte'
@@ -36,6 +39,23 @@
       id: 'terminal',
       label: () => $i18n.t('settings.tabs.terminal'),
       icon: 'M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z'
+    },
+    {
+      id: 'companion',
+      label: () => '手機 Companion',
+      icon: 'M7.5 3.75h9A1.5 1.5 0 0118 5.25v13.5a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 18.75V5.25a1.5 1.5 0 011.5-1.5z',
+      extra: 'M10.5 17.25h3'
+    },
+    {
+      id: 'drawThings',
+      label: () => $i18n.t('settings.tabs.drawThings'),
+      icon: 'M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25z'
+    },
+    {
+      id: 'asuswrtMcp',
+      label: () => $i18n.t('settings.tabs.asuswrtMcp'),
+      icon: 'M3 7.5A2.25 2.25 0 015.25 5.25h13.5A2.25 2.25 0 0121 7.5v9a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 16.5v-9z',
+      extra: 'M7.5 9.75h.008v.008H7.5V9.75zm4.5 0h.008v.008H12V9.75zm4.5 0h.008v.008H16.5V9.75M7.5 14.25h9'
     },
     {
       id: 'inference',
@@ -134,6 +154,12 @@
         <Connections />
       {:else if settingsTab === 'terminal'}
         <OpenTerminal />
+      {:else if settingsTab === 'companion'}
+        <Companion />
+      {:else if settingsTab === 'drawThings'}
+        <DrawThings />
+      {:else if settingsTab === 'asuswrtMcp'}
+        <AsuswrtMcp />
       {:else if settingsTab === 'inference'}
         <InferenceRuntime />
       {:else if settingsTab === 'models'}

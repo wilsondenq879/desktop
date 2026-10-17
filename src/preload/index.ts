@@ -89,6 +89,7 @@ const api = {
   getServerInfo: () => ipcRenderer.invoke('server:info'),
   getServerLogs: () => ipcRenderer.invoke('server:logs'),
   clearServerLogs: () => ipcRenderer.invoke('server:logs:clear'),
+  createDesktopCompanionPairing: () => ipcRenderer.invoke('desktop-companion:pairing:create'),
 
   // PTY — MessagePort stays in preload, renderer uses these functions
   listPtys: () => ipcRenderer.invoke('pty:list'),
@@ -117,6 +118,26 @@ const api = {
   getOpenTerminalStatus: () => ipcRenderer.invoke('open-terminal:status'),
   getOpenTerminalProjectFolder: (connectionId: string, chatId: string) =>
     ipcRenderer.invoke('open-terminal:project:get', connectionId, chatId),
+  getOpenTerminalDefaultProjectFolder: (connectionId: string) =>
+    ipcRenderer.invoke('open-terminal:project:default:get', connectionId),
+  isOpenTerminalTemporaryProjectFolder: (folderPath?: string | null) =>
+    ipcRenderer.invoke('open-terminal:project:is-temporary', folderPath),
+  selectOpenTerminalDefaultProjectFolder: (options: {
+    connectionId: string
+    connectionUrl: string
+  }) => ipcRenderer.invoke('open-terminal:project:default:select', options),
+  claimOpenTerminalDefaultProjectFolder: (options: {
+    connectionId: string
+    chatId: string
+    connectionUrl: string
+  }) => ipcRenderer.invoke('open-terminal:project:default:claim', options),
+  prepareOpenTerminalProjectForChat: (options: {
+    connectionId: string
+    chatId?: string
+    connectionUrl: string
+  }) => ipcRenderer.invoke('open-terminal:project:prepare', options),
+  clearOpenTerminalDefaultProjectFolder: (connectionId: string) =>
+    ipcRenderer.invoke('open-terminal:project:default:clear', connectionId),
   selectOpenTerminalProjectFolder: (options: {
     connectionId: string
     chatId: string
@@ -129,6 +150,16 @@ const api = {
   }) => ipcRenderer.invoke('open-terminal:project:apply', options),
   clearOpenTerminalProjectFolder: (connectionId: string, chatId: string) =>
     ipcRenderer.invoke('open-terminal:project:clear', connectionId, chatId),
+  useOpenTerminalRecentProject: (options: {
+    connectionId: string
+    connectionUrl: string
+    folderPath: string
+  }) => ipcRenderer.invoke('open-terminal:project:default:use', options),
+  testDrawThingsConnection: (apiUrl?: string) => ipcRenderer.invoke('draw-things:test', apiUrl),
+  testAsuswrtMcp: (settings?: Record<string, unknown>) =>
+    ipcRenderer.invoke('asuswrt-mcp:test', settings),
+  saveAsuswrtMcp: (settings?: Record<string, unknown>) =>
+    ipcRenderer.invoke('asuswrt-mcp:save', settings),
   connectOpenTerminalPty: (onOutput: (data: string) => void) => {
     otPtyOutputCallback = onOutput
     ipcRenderer.invoke('open-terminal:pty:connect')
@@ -140,6 +171,29 @@ const api = {
       activeOtPtyPort = null
     }
   },
+
+  // Agent workspace
+  listWorkspaceProjects: () => ipcRenderer.invoke('workspace:projects:list'),
+  startWorkspaceTask: (options: { connectionId: string; chatId?: string }) =>
+    ipcRenderer.invoke('workspace:task:start', options),
+  finishWorkspaceTask: (options: { checkpointId: string; error?: string }) =>
+    ipcRenderer.invoke('workspace:task:finish', options),
+  getWorkspaceState: (options: {
+    connectionId: string
+    chatId?: string
+    projectPath?: string | null
+  }) => ipcRenderer.invoke('workspace:state:get', options),
+  readWorkspaceFile: (options: {
+    checkpointId: string
+    relativePath: string
+    version?: 'before' | 'after'
+  }) => ipcRenderer.invoke('workspace:file:read', options),
+  openWorkspaceFile: (options: { checkpointId: string; relativePath: string }) =>
+    ipcRenderer.invoke('workspace:file:open', options),
+  revealWorkspaceFile: (options: { checkpointId: string; relativePath: string }) =>
+    ipcRenderer.invoke('workspace:file:reveal', options),
+  rollbackWorkspaceCheckpoint: (checkpointId: string) =>
+    ipcRenderer.invoke('workspace:checkpoint:rollback', checkpointId),
 
   // llama.cpp
   setupLlamaCpp: () => ipcRenderer.invoke('llamacpp:setup'),
@@ -190,6 +244,7 @@ const api = {
   connectTo: (id: string) => ipcRenderer.invoke('connections:connect', id),
   validateUrl: (url: string) => ipcRenderer.invoke('validate:url', url),
   selectFolder: () => ipcRenderer.invoke('dialog:selectFolder'),
+  selectFile: (options?: { title?: string }) => ipcRenderer.invoke('dialog:selectFile', options),
 
   // Updater
   checkForUpdates: () => ipcRenderer.invoke('updater:check'),
@@ -200,8 +255,8 @@ const api = {
   getChangelog: () => ipcRenderer.invoke('app:changelog'),
 
   // Auth token relay from webview
-  setAuthToken: (token: string, connectionId?: string) =>
-    ipcRenderer.invoke('app:setAuthToken', token, connectionId)
+  setAuthToken: (token: string, connectionId?: string, connectionUrl?: string) =>
+    ipcRenderer.invoke('app:setAuthToken', token, connectionId, connectionUrl)
 }
 
 if (process.contextIsolated) {

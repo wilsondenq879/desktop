@@ -1,0 +1,16 @@
+{
+  "asuswrt": {
+    "type": "stdio",
+    "command": "py",
+    "args": [
+      "C:\\path\\to\\open-webui-desktop\\tools\\asuswrt-mcp\\server.py"
+    ],
+    "env": {
+      "ASUSWRT_HOST": "192.168.50.1",
+      "ASUSWRT_SSH_USER": "admin",
+      "ASUSWRT_SSH_KEY": "C:\\Users\\YOUR_NAME\\.ssh\\asuswrt_ed25519",
+      "ASUSWRT_SSH_PORT": "22",
+      "ASUSWRT_SSH_KNOWN_HOSTS": "C:\\Users\\YOUR_NAME\\.ssh\\known_hosts"
+    }
+  }
+}

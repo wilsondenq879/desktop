@@ -14,18 +14,18 @@ Your AI, right on your desktop. [Open WebUI](https://github.com/open-webui/open-
 
 ## Download
 
-| Platform | Installer |
-|----------|-----------|
-| macOS (Apple Silicon) | [**Download .dmg**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-arm64.dmg) |
-| macOS (Intel) | [**Download .dmg**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-x64.dmg) |
-| Windows x64 | [**Download .exe**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-x64-setup.exe) |
-| Windows ARM64 | [**Download .exe**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-arm64-setup.exe) |
-| Linux x64 (AppImage) | [**Download .AppImage**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_x64.AppImage) |
-| Linux x64 (Debian/Ubuntu) | [**Download .deb**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_amd64.deb) |
-| Linux x64 (Snap) | [**Download .snap**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_amd64.snap) |
-| Linux x64 (Flatpak) | [**Download .flatpak**](https://github.com/open-webui/desktop/releases/latest/download/open-webui.flatpak) |
-| Linux ARM64 (AppImage) | [**Download .AppImage**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_arm64.AppImage) |
-| Linux ARM64 (Debian/Ubuntu) | [**Download .deb**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_arm64.deb) |
+| Platform                    | Installer                                                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| macOS (Apple Silicon)       | [**Download .dmg**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-arm64.dmg)           |
+| macOS (Intel)               | [**Download .dmg**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-x64.dmg)             |
+| Windows x64                 | [**Download .exe**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-x64-setup.exe)       |
+| Windows ARM64               | [**Download .exe**](https://github.com/open-webui/desktop/releases/latest/download/open-webui-arm64-setup.exe)     |
+| Linux x64 (AppImage)        | [**Download .AppImage**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_x64.AppImage)   |
+| Linux x64 (Debian/Ubuntu)   | [**Download .deb**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_amd64.deb)           |
+| Linux x64 (Snap)            | [**Download .snap**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_amd64.snap)         |
+| Linux x64 (Flatpak)         | [**Download .flatpak**](https://github.com/open-webui/desktop/releases/latest/download/open-webui.flatpak)         |
+| Linux ARM64 (AppImage)      | [**Download .AppImage**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_arm64.AppImage) |
+| Linux ARM64 (Debian/Ubuntu) | [**Download .deb**](https://github.com/open-webui/desktop/releases/latest/download/open-webui_arm64.deb)           |
 
 Internet required on first launch. After that, everything works offline. [All releases →](https://github.com/open-webui/desktop/releases)
 
@@ -44,18 +44,21 @@ Use both at the same time.
 - 🧠 **Local inference.** Optionally run models entirely on your hardware via the built-in llama.cpp engine. Your data never leaves your machine.
 - 🎯 **One-click setup.** Launch and connect to a server in seconds. Local models can be enabled from the settings.
 - 🔌 **Multiple connections.** Juggle servers and switch between them instantly.
-- 🗂️ **Per-chat project folders.** Link a Windows folder to a saved chat and let Open Terminal restore that working directory automatically. See [Project folders](docs/PROJECT_FOLDERS.md).
+- 🗂️ **Isolated per-chat workspaces.** Link a Windows folder to a chat, or start safely in a temporary workspace and move generated files into a project later. See [Project folders](docs/PROJECT_FOLDERS.md).
+- 🛡️ **Approval control.** Choose `要求核准` or `代我核准` next to the chat composer’s `＋` button. It leaves your native Open WebUI Skills and `/` behaviour unchanged.
+- 🧩 **Workspace Skills sync.** Local `SKILL.md` files are imported into Open WebUI's native Workspace Skills store at sign-in, so the built-in `$` picker can use the same skills without a separate Codex-only menu. Existing `lmlab` prefixes are hidden from display while IDs remain stable.
+- 🌐 **ASUSWRT MCP prototype.** The Windows package includes a dependency-free MCP helper and a `Settings → ASUSWRT MCP` page for configuring Router IP, SSH, keys, and remote ZeroTier/Tailscale access. See [ASUSWRT MCP](tools/asuswrt-mcp/README.md).
 - 🔄 **Auto-updates.** New releases land in the background.
 - 📡 **Offline-ready.** No internet needed after initial setup.
 - 💻 **Cross-platform.** macOS, Windows, and Linux.
 
 ## System Requirements
 
-|  | Local Models | Remote Only |
-|--|-------------|-------------|
-| **Disk** | 5 GB+ | ~500 MB |
-| **RAM** | 16 GB+ | 4 GB |
-| **OS** | macOS 12+, Windows 10+, modern Linux (glibc 2.28+) | Same |
+|          | Local Models                                       | Remote Only |
+| -------- | -------------------------------------------------- | ----------- |
+| **Disk** | 5 GB+                                              | ~500 MB     |
+| **RAM**  | 16 GB+                                             | 4 GB        |
+| **OS**   | macOS 12+, Windows 10+, modern Linux (glibc 2.28+) | Same        |
 
 > [!NOTE]
 > Local models need serious RAM (7B ≈ 8 GB, 13B ≈ 16 GB). Lighter machine? Connect to a remote server instead.

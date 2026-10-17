@@ -1,0 +1,41 @@
+[
+  {
+    "slug":"smb-topology", "title":"小型工作室 / SMB 高速網路", "subtitle":"設備圖示、匯聚層與平行分支；埠數與速率為示意配置，非特定產品規格。", "visual_family":"network",
+    "nodes":[
+      {"id":"nas","label":"NAS / 儲存","detail":"25G 資料連線","icon":"nas","level":0},
+      {"id":"ai-a","label":"AI 工作站 A","detail":"25G 資料連線","icon":"workstation","level":0},
+      {"id":"ai-b","label":"AI 工作站 B","detail":"25G 資料連線","icon":"workstation","level":0},
+      {"id":"core","label":"25G / 10G 匯聚交換器","detail":"桌上型設備概念 · 8 埠示意","icon":"aggregation-switch","level":1,"port_groups":[{"label":"25G","count":4,"tone":"active"},{"label":"10G","count":4,"tone":"network"}]},
+      {"id":"editing","label":"剪輯電腦","detail":"10G 資料連線","icon":"desktop","level":2},
+      {"id":"storage","label":"共享檔案 NAS","detail":"10G 資料連線","icon":"nas","level":2},
+      {"id":"office","label":"辦公室網路","detail":"10G 上行","icon":"building","level":2}
+    ],
+    "edges":[{"from":"nas","to":"core","tone":"active"},{"from":"ai-a","to":"core","tone":"active"},{"from":"ai-b","to":"core","tone":"active"},{"from":"core","to":"editing","tone":"network"},{"from":"core","to":"storage","tone":"network"},{"from":"core","to":"office","tone":"network"}]
+  },
+  {
+    "slug":"local-ai-fabric", "title":"Local AI · 存取層、資料邊緣與運算骨幹", "subtitle":"概念拓撲；RDMA 支援、網卡與線材相容性須依實際設備確認。", "visual_family":"rdma",
+    "nodes":[
+      {"id":"remote","label":"遠端多使用者","detail":"手機 / 筆電","icon":"users","level":0},
+      {"id":"vpn","label":"私有 VPN 通道","detail":"Tailscale / ZeroTier / VPN","icon":"vpn","level":1},
+      {"id":"edge","label":"10G 資料邊緣","detail":"檔案與管理存取","icon":"switch","level":2},
+      {"id":"fabric","label":"25G RDMA 運算骨幹","detail":"運算節點互連","icon":"rdma-switch","level":2},
+      {"id":"nas","label":"資料與模型儲存","detail":"資料集 / 模型權重","icon":"nas","level":3},
+      {"id":"a","label":"AI 工作站 A","detail":"GPU + RDMA 網卡","icon":"workstation","level":3},
+      {"id":"b","label":"AI 工作站 B","detail":"GPU + RDMA 網卡","icon":"workstation","level":3}
+    ],
+    "edges":[{"from":"remote","to":"vpn","tone":"remote","dashed":true,"label":"加密存取"},{"from":"vpn","to":"edge","tone":"remote","dashed":true},{"from":"edge","to":"nas","tone":"network","label":"資料 / 模型檔案"},{"from":"edge","to":"fabric","tone":"network","label":"資料上行"},{"from":"fabric","to":"a","tone":"active"},{"from":"fabric","to":"b","tone":"active"},{"from":"a","to":"b","tone":"active","direction":"both","label":"分散式運算資料交換"}]
+  },
+  {
+    "slug":"mcp-services", "title":"Open WebUI · 模型、工具與路由器觀測", "subtitle":"軟體元件關係；模型呼叫與裝置控制分開標示。", "visual_family":"api",
+    "nodes":[
+      {"id":"user","label":"瀏覽器 / 手機 App","detail":"同一套聊天介面","icon":"browser","level":0},
+      {"id":"webui","label":"Open WebUI","detail":"對談 / Skills / 核准","icon":"app","level":1},
+      {"id":"llm","label":"本地模型服務","detail":"Ollama / 相容 API","icon":"ai-model","level":2},
+      {"id":"mcp","label":"MCP 工具服務","detail":"唯讀查詢 / 已核准操作","icon":"mcp","level":2},
+      {"id":"kb","label":"研究知識庫","detail":"文件與向量檢索","icon":"vector-db","level":2},
+      {"id":"router","label":"路由器","detail":"受控管理通道","icon":"router","level":3},
+      {"id":"metrics","label":"狀態與事件","detail":"負載 / 流量 / 日誌","icon":"monitoring","level":3}
+    ],
+    "edges":[{"from":"user","to":"webui","direction":"both","label":"訊息 / 成品"},{"from":"webui","to":"llm","direction":"both","label":"模型 API"},{"from":"webui","to":"mcp","direction":"both","tone":"remote","dashed":true,"label":"工具呼叫 / 核准"},{"from":"webui","to":"kb","direction":"both","label":"檢索"},{"from":"mcp","to":"router","direction":"both","tone":"remote","dashed":true,"label":"管理通道"},{"from":"router","to":"metrics","direction":"forward","tone":"active","label":"觀測資料"}]
+  }
+]

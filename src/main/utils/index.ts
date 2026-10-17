@@ -585,6 +585,12 @@ export const startServer = async (
 
   const commandArgs = ['-m', 'uv', 'run', 'open-webui', 'serve', '--host', host]
   const dataDir = getOpenWebUIDataPath()
+  try {
+    const { installBundledVisualAssets } = await import('./openwebui-skills')
+    await installBundledVisualAssets()
+  } catch (error) {
+    log.warn('Bundled visual assets could not be restored; server startup continues:', error)
+  }
   const secretKey = getSecretKey()
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true })
@@ -837,6 +843,32 @@ export interface AppConfig {
     cwd: string
     apiKey: string
     projectFolders?: Record<string, Record<string, string>>
+    defaultProjectFolders?: Record<string, string>
+  }
+  workspace: {
+    recentProjects: string[]
+    panelOpen: boolean
+    projectIsolationVersion: number
+  }
+  companion: {
+    enabled: boolean
+    host: string
+    port: number
+    apiKey: string
+  }
+  drawThings: {
+    enabled: boolean
+    apiUrl: string
+    autoLaunch: boolean
+    bridgePort: number
+  }
+  asuswrtMcp: {
+    enabled: boolean
+    host: string
+    sshPort: number
+    username: string
+    keyPath: string
+    knownHostsPath: string
   }
   llamaCpp: {
     enabled: boolean
@@ -872,10 +904,42 @@ const DEFAULT_CONFIG: AppConfig = {
     autoUpdate: true
   },
   openTerminal: {
-    enabled: false,
+    // Desktop Skills (file edits, previews and diagram generation) need a
+    // host-local tool channel from the first chat.  Keep it on by default;
+    // users can still turn it off from Settings when they do not want local
+    // filesystem access.
+    enabled: true,
     cwd: '',
     apiKey: '',
-    projectFolders: {}
+    projectFolders: {},
+    defaultProjectFolders: {}
+  },
+  workspace: {
+    recentProjects: [],
+    panelOpen: true,
+    // Persisted as 1 by the v0.0.28 startup migration. Keeping the default at
+    // 0 also migrates users whose older config has no workspace object at all.
+    projectIsolationVersion: 0
+  },
+  companion: {
+    enabled: true,
+    host: '0.0.0.0',
+    port: 39280,
+    apiKey: ''
+  },
+  drawThings: {
+    enabled: true,
+    apiUrl: 'http://127.0.0.1:7860',
+    autoLaunch: true,
+    bridgePort: 7861
+  },
+  asuswrtMcp: {
+    enabled: false,
+    host: '',
+    sshPort: 22,
+    username: 'admin',
+    keyPath: '',
+    knownHostsPath: ''
   },
   llamaCpp: {
     enabled: false,
@@ -900,7 +964,23 @@ export const getConfig = async (): Promise<AppConfig> => {
   try {
     if (fs.existsSync(configPath)) {
       const data = await fs.promises.readFile(configPath, 'utf8')
-      return { ...DEFAULT_CONFIG, ...JSON.parse(data) }
+      const saved = JSON.parse(data)
+      return {
+        ...DEFAULT_CONFIG,
+        ...saved,
+        drawThings: {
+          ...DEFAULT_CONFIG.drawThings,
+          ...(saved.drawThings ?? {})
+        },
+        asuswrtMcp: {
+          ...DEFAULT_CONFIG.asuswrtMcp,
+          ...(saved.asuswrtMcp ?? {})
+        },
+        companion: {
+          ...DEFAULT_CONFIG.companion,
+          ...(saved.companion ?? {})
+        }
+      }
     }
     return { ...DEFAULT_CONFIG }
   } catch (error) {

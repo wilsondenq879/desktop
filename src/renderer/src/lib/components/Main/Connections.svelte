@@ -8,6 +8,14 @@
   import Content from './Connections/Content.svelte'
   import StatusBar from './Connections/StatusBar.svelte'
   import LogPanel from './Connections/LogPanel.svelte'
+  import ProjectLauncher from './Connections/ProjectLauncher.svelte'
+  import WorkspacePanel from './Connections/WorkspacePanel.svelte'
+
+  interface RecentProject {
+    path: string
+    name: string
+    available: boolean
+  }
 
   interface Props {
     onOpenSettings: () => void
@@ -38,6 +46,11 @@
   let localInstalled = $state(false)
   let openTerminalInstalled = $state(false)
   let showAddConnectionModal = $state(false)
+  let workspacePanelOpen = $state(true)
+  let workspacePreferenceLoaded = false
+  let recentProjects: RecentProject[] = $state([])
+  let projectLauncherDismissed: Record<string, boolean> = $state({})
+  let projectLauncherRequested = $state(false)
 
   // Active log panel
   let activeLog = $state<'server' | 'open-terminal' | 'llama-server' | null>(null)
@@ -66,13 +79,23 @@
   // main process; this renderer state only reflects the active chat.
   let chatIds: Record<string, string> = $state({})
   let projectFolder = $state<string | null>(null)
+  let projectTemporary = $state(false)
   let projectBusy = $state(false)
   let projectMessage = $state('')
   let projectError = $state('')
   let projectRequestId = 0
   let applyingProjectKeys: string[] = []
+  // A project selected before a chat exists is intentionally claimed only by
+  // the next chat created in this window. This prevents a folder picker on
+  // the home screen from unexpectedly changing an older saved conversation.
+  let armedProjectConnections: Record<string, boolean> = $state({})
   const activeChatId = $derived(chatIds[activeConnectionId] ?? '')
   const projectControlsVisible = $derived(view === 'connected' && !!activeConnectionId)
+  const projectLauncherVisible = $derived(
+    view === 'connected' &&
+      !!activeConnectionId &&
+      (projectLauncherRequested || (!activeChatId && !projectLauncherDismissed[activeConnectionId]))
+  )
 
   // Llama Server state
   let llamaCppStatus = $state<string | null>(null)
@@ -371,19 +394,82 @@
     webview?.reload?.()
   }
 
+  const syncConnectionAuthToken = async (connectionId: string) => {
+    const webview = document.querySelector(
+      `webview[partition="persist:connection-${connectionId}"]`
+    ) as any
+    if (!webview?.executeJavaScript) return
+    try {
+      const token = await webview.executeJavaScript(`localStorage.getItem('token') || ''`)
+      await window.electronAPI.setAuthToken?.(typeof token === 'string' ? token : '', connectionId)
+    } catch {
+      // Content.svelte retries when the guest finishes loading.
+    }
+  }
+
+  const setProjectFolderState = async (
+    folderPath: string | null,
+    temporary?: boolean
+  ): Promise<void> => {
+    projectFolder = folderPath
+    projectTemporary = folderPath
+      ? (temporary ?? (await window.electronAPI.isOpenTerminalTemporaryProjectFolder(folderPath)))
+      : false
+  }
+
   const refreshProjectFolder = async (connectionId: string, chatId: string) => {
     const requestId = ++projectRequestId
     projectMessage = ''
     projectError = ''
 
-    if (!connectionId || !chatId) {
-      projectFolder = null
+    if (!connectionId) {
+      await setProjectFolderState(null)
       return
     }
 
-    const folder = await window.electronAPI.getOpenTerminalProjectFolder(connectionId, chatId)
+    if (!chatId) {
+      const folder = await window.electronAPI.getOpenTerminalDefaultProjectFolder(connectionId)
+      if (requestId !== projectRequestId) return
+      await setProjectFolderState(folder)
+      return
+    }
+
+    let folder = await window.electronAPI.getOpenTerminalProjectFolder(connectionId, chatId)
     if (requestId !== projectRequestId) return
-    projectFolder = folder
+
+    if (!folder && armedProjectConnections[connectionId]) {
+      projectBusy = true
+      try {
+        await syncConnectionAuthToken(connectionId)
+        const result = await window.electronAPI.claimOpenTerminalDefaultProjectFolder({
+          connectionId,
+          chatId,
+          connectionUrl: openConnections.get(connectionId) ?? ''
+        })
+        if (requestId !== projectRequestId) return
+        delete armedProjectConnections[connectionId]
+        armedProjectConnections = { ...armedProjectConnections }
+        if (result?.path) {
+          await setProjectFolderState(result.path, result.temporary)
+          if (result.warning) projectError = result.warning
+          else {
+            projectMessage = $i18n.t(
+              result.temporary ? 'statusBar.temporaryReady' : 'statusBar.projectReady'
+            )
+          }
+          if (result.directConnectionChanged) reloadConnectionWebview(connectionId)
+          return
+        }
+      } catch (error: any) {
+        if (requestId === projectRequestId) {
+          projectError = error?.message ?? $i18n.t('statusBar.projectError')
+        }
+      } finally {
+        if (requestId === projectRequestId) projectBusy = false
+      }
+    }
+
+    await setProjectFolderState(folder)
     if (!folder) return
 
     const key = `${connectionId}:${chatId}`
@@ -391,15 +477,20 @@
     applyingProjectKeys.push(key)
     projectBusy = true
     try {
+      await syncConnectionAuthToken(connectionId)
       const result = await window.electronAPI.applyOpenTerminalProjectFolder({
         connectionId,
         chatId,
         connectionUrl: openConnections.get(connectionId) ?? ''
       })
       if (requestId !== projectRequestId) return
-      projectFolder = result?.path ?? folder
+      await setProjectFolderState(result?.path ?? folder, result?.temporary)
       if (result?.warning) projectError = result.warning
-      else projectMessage = $i18n.t('statusBar.projectReady')
+      else {
+        projectMessage = $i18n.t(
+          result?.temporary ? 'statusBar.temporaryReady' : 'statusBar.projectReady'
+        )
+      }
       if (result?.directConnectionChanged) reloadConnectionWebview(connectionId)
     } catch (error: any) {
       if (requestId === projectRequestId) {
@@ -425,12 +516,47 @@
     }
   }
 
+  const applyProjectFeedback = (result: any) => {
+    const migration = result?.migration
+    projectMessage = migration?.movedFiles
+      ? $i18n.t('statusBar.projectMigrated', { count: migration.movedFiles })
+      : $i18n.t(result?.temporary ? 'statusBar.temporaryReady' : 'statusBar.projectReady')
+
+    const warnings: string[] = []
+    if (result?.warning) warnings.push(result.warning)
+    const adjustedCount =
+      (migration?.renamedConflicts?.length ?? 0) + (migration?.skippedEntries?.length ?? 0)
+    if (adjustedCount > 0) {
+      warnings.push($i18n.t('statusBar.projectMigrationAdjusted', { count: adjustedCount }))
+    }
+    projectError = warnings.join(' ')
+  }
+
   const chooseProjectFolder = async () => {
-    if (!activeConnectionId || !activeChatId || projectBusy) return
+    if (!activeConnectionId || projectBusy) return
     projectBusy = true
     projectMessage = $i18n.t('statusBar.projectConnecting')
     projectError = ''
     try {
+      await syncConnectionAuthToken(activeConnectionId)
+      if (!activeChatId) {
+        const result = await window.electronAPI.selectOpenTerminalDefaultProjectFolder({
+          connectionId: activeConnectionId,
+          connectionUrl: openConnections.get(activeConnectionId) ?? ''
+        })
+        if (result?.canceled) {
+          projectMessage = ''
+          return
+        }
+        await setProjectFolderState(result.path, result.temporary)
+        armedProjectConnections = { ...armedProjectConnections, [activeConnectionId]: true }
+        applyProjectFeedback(result)
+        // Refresh even when the saved connection did not change: the page may
+        // have attempted Direct Terminal discovery before localhost was ready.
+        reloadConnectionWebview(activeConnectionId)
+        return
+      }
+
       const result = await window.electronAPI.selectOpenTerminalProjectFolder({
         connectionId: activeConnectionId,
         chatId: activeChatId,
@@ -440,26 +566,133 @@
         projectMessage = ''
         return
       }
-      projectFolder = result.path
-      if (result.warning) projectError = result.warning
-      else projectMessage = $i18n.t('statusBar.projectReady')
-      if (result.directConnectionChanged) reloadConnectionWebview(activeConnectionId)
+      await setProjectFolderState(result.path, result.temporary)
+      applyProjectFeedback(result)
+      reloadConnectionWebview(activeConnectionId)
     } catch (error: any) {
       projectError = error?.message ?? $i18n.t('statusBar.projectError')
+      projectMessage = ''
+    } finally {
+      projectBusy = false
+      void refreshRecentProjects()
+    }
+  }
+
+  const refreshRecentProjects = async () => {
+    try {
+      recentProjects = (await window.electronAPI.listWorkspaceProjects()) ?? []
+    } catch {
+      recentProjects = []
+    }
+  }
+
+  const useRecentProject = async (project: RecentProject) => {
+    if (!activeConnectionId || !project.available || projectBusy) return
+    projectBusy = true
+    projectMessage = $i18n.t('statusBar.projectConnecting')
+    projectError = ''
+    try {
+      await syncConnectionAuthToken(activeConnectionId)
+      const result = await window.electronAPI.useOpenTerminalRecentProject({
+        connectionId: activeConnectionId,
+        connectionUrl: openConnections.get(activeConnectionId) ?? '',
+        folderPath: project.path
+      })
+      await setProjectFolderState(result?.path ?? project.path, result?.temporary)
+      armedProjectConnections = { ...armedProjectConnections, [activeConnectionId]: true }
+      applyProjectFeedback(result)
+      reloadConnectionWebview(activeConnectionId)
+      await refreshRecentProjects()
+    } catch (recentError: any) {
+      projectError = recentError?.message ?? $i18n.t('statusBar.projectError')
       projectMessage = ''
     } finally {
       projectBusy = false
     }
   }
 
+  const dismissProjectLauncher = () => {
+    if (!activeConnectionId) return
+    projectLauncherDismissed = {
+      ...projectLauncherDismissed,
+      [activeConnectionId]: true
+    }
+    projectLauncherRequested = false
+  }
+
+  const startTemporaryProject = async () => {
+    if (!activeConnectionId || projectBusy) return
+    projectBusy = true
+    projectMessage = $i18n.t('statusBar.projectConnecting')
+    projectError = ''
+    try {
+      await syncConnectionAuthToken(activeConnectionId)
+      const result = await window.electronAPI.prepareOpenTerminalProjectForChat({
+        connectionId: activeConnectionId,
+        connectionUrl: openConnections.get(activeConnectionId) ?? ''
+      })
+      if (!result?.path) throw new Error($i18n.t('statusBar.projectError'))
+      await setProjectFolderState(result.path, result.temporary)
+      armedProjectConnections = { ...armedProjectConnections, [activeConnectionId]: true }
+      projectMessage = $i18n.t('statusBar.temporaryReady')
+      reloadConnectionWebview(activeConnectionId)
+      dismissProjectLauncher()
+    } catch (temporaryError: any) {
+      projectError = temporaryError?.message ?? $i18n.t('statusBar.projectError')
+      projectMessage = ''
+    } finally {
+      projectBusy = false
+    }
+  }
+
+  const openProjectLauncher = () => {
+    if (!activeConnectionId) return
+    projectLauncherRequested = true
+    const baseUrl = openConnections.get(activeConnectionId)
+    const webview = document.querySelector(
+      `webview[partition="persist:connection-${activeConnectionId}"]`
+    ) as any
+    if (baseUrl && activeChatId) webview?.loadURL?.(baseUrl)
+    void refreshProjectFolder(activeConnectionId, '')
+    void refreshRecentProjects()
+  }
+
+  const setWorkspacePanelOpen = async (open: boolean) => {
+    workspacePanelOpen = open
+    try {
+      const current = await window.electronAPI.getConfig()
+      await window.electronAPI.setConfig({
+        workspace: {
+          ...(current?.workspace ?? { recentProjects: [] }),
+          panelOpen: open
+        }
+      })
+      config.set(await window.electronAPI.getConfig())
+    } catch {
+      // The panel remains usable for this session even if preference persistence fails.
+    }
+  }
+
   const clearProjectFolder = async () => {
-    if (!activeConnectionId || !activeChatId || projectBusy) return
+    if (!activeConnectionId || projectBusy) return
     projectBusy = true
     projectError = ''
     try {
-      await window.electronAPI.clearOpenTerminalProjectFolder(activeConnectionId, activeChatId)
-      projectFolder = null
-      projectMessage = $i18n.t('statusBar.projectCleared')
+      if (!activeChatId) {
+        await window.electronAPI.clearOpenTerminalDefaultProjectFolder(activeConnectionId)
+        delete armedProjectConnections[activeConnectionId]
+        armedProjectConnections = { ...armedProjectConnections }
+        await setProjectFolderState(null)
+        projectMessage = $i18n.t('statusBar.projectCleared')
+        return
+      }
+
+      const result = await window.electronAPI.clearOpenTerminalProjectFolder(
+        activeConnectionId,
+        activeChatId
+      )
+      await setProjectFolderState(result?.path ?? null, true)
+      projectMessage = $i18n.t('statusBar.temporaryReady')
     } catch (error: any) {
       projectError = error?.message ?? $i18n.t('statusBar.projectError')
     } finally {
@@ -471,7 +704,18 @@
     const connectionId = activeConnectionId
     const chatId = chatIds[connectionId] ?? ''
     if (view === 'connected') void refreshProjectFolder(connectionId, chatId)
-    else projectFolder = null
+    else {
+      projectFolder = null
+      projectTemporary = false
+    }
+  })
+
+  $effect(() => {
+    const savedPreference = $config?.workspace?.panelOpen
+    if (!workspacePreferenceLoaded && typeof savedPreference === 'boolean') {
+      workspacePanelOpen = savedPreference
+      workspacePreferenceLoaded = true
+    }
   })
 
   // ── Webview event delivery ─────────────────────────────
@@ -613,6 +857,19 @@
         return
       }
 
+      // A completed Desktop task is the hand-off point for the user-facing
+      // result. Re-open the workspace panel even if it was previously hidden
+      // so generated files and the Canvas preview are immediately visible.
+      if (
+        data.type === 'workspace:changed' &&
+        data.data?.connectionId === activeConnectionId &&
+        (data.data?.status === 'complete' || data.data?.status === 'failed' || (data.data?.artifactCount ?? 0) > 0)
+      ) {
+        workspacePanelOpen = true
+        void setWorkspacePanelOpen(true)
+        return
+      }
+
       // ── Everything else → broadcast to all webviews ───
       sendToWebview(data)
     })
@@ -637,6 +894,8 @@
     window.electronAPI.getOpenTerminalStatus().then((installed: boolean) => {
       openTerminalInstalled = installed
     })
+
+    void refreshRecentProjects()
 
     // Check if Open WebUI package is installed
     window.electronAPI.getPackageVersion('open-webui').then((v: string | null) => {
@@ -727,31 +986,65 @@
       />
     {/if}
 
-    <Content
-      {sidebarOpen}
-      bind:view
-      {activeConnectionId}
-      {connectingId}
-      {openConnections}
-      {localConn}
-      {localInstalled}
-      {remoteConnections}
-      bind:installPhase
-      bind:installError
-      bind:installStatus
-      bind:toastVisible
-      bind:url
-      bind:connecting
-      bind:error
-      bind:showAddConnectionModal
-      bind:autoInstall
-      onStartInstall={startInstall}
-      onAddConnection={addConnection}
-      onSetView={(v) => {
-        view = v
-      }}
-      onNavigationChange={handleNavigationChange}
-    />
+    <div class="relative flex min-w-0 flex-1">
+      <div class="relative flex min-w-0 flex-1">
+        <Content
+          {sidebarOpen}
+          bind:view
+          {activeConnectionId}
+          {connectingId}
+          {openConnections}
+          {localConn}
+          {localInstalled}
+          {remoteConnections}
+          bind:installPhase
+          bind:installError
+          bind:installStatus
+          bind:toastVisible
+          bind:url
+          bind:connecting
+          bind:error
+          bind:showAddConnectionModal
+          bind:autoInstall
+          onStartInstall={startInstall}
+          onAddConnection={addConnection}
+          onSetView={(v) => {
+            view = v
+          }}
+          onNavigationChange={handleNavigationChange}
+          onProjectRequest={(connectionId) => {
+            armedProjectConnections = { ...armedProjectConnections, [connectionId]: true }
+          }}
+        />
+
+        {#if projectLauncherVisible}
+          <ProjectLauncher
+            {projectFolder}
+            {projectTemporary}
+            {projectBusy}
+            {openTerminalStatus}
+            {recentProjects}
+            onChooseProject={() => void chooseProjectFolder()}
+            onUseProject={(project) => void useRecentProject(project)}
+            onOpenProject={() => {
+              if (projectFolder) window.electronAPI.openPath(projectFolder)
+            }}
+            onStart={dismissProjectLauncher}
+            onContinueWithoutProject={() => void startTemporaryProject()}
+          />
+        {/if}
+      </div>
+
+      {#if workspacePanelOpen && projectControlsVisible}
+        <WorkspacePanel
+          connectionId={activeConnectionId}
+          chatId={activeChatId}
+          {projectFolder}
+          {projectTemporary}
+          onClose={() => void setWorkspacePanelOpen(false)}
+        />
+      {/if}
+    </div>
   </div>
 
   {#if activeLog}
@@ -810,9 +1103,11 @@
     {projectControlsVisible}
     {activeChatId}
     {projectFolder}
+    {projectTemporary}
     {projectBusy}
     {projectMessage}
     {projectError}
+    {workspacePanelOpen}
     onSelectLog={selectLog}
     onStartServer={async () => {
       if (!localInstalled) {
@@ -833,5 +1128,7 @@
     onOpenProjectFolder={() => {
       if (projectFolder) window.electronAPI.openPath(projectFolder)
     }}
+    onOpenProjectLauncher={openProjectLauncher}
+    onToggleWorkspacePanel={() => void setWorkspacePanelOpen(!workspacePanelOpen)}
   />
 </div>

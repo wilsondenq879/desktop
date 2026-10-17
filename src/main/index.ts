@@ -18,7 +18,10 @@ import {
   dialog
 } from 'electron'
 import path, { join } from 'path'
+import fs from 'fs'
+import os from 'os'
 import { readFile, statfs } from 'fs/promises'
+import { randomBytes } from 'crypto'
 
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 
@@ -36,6 +39,7 @@ import {
   installPython,
   isPackageInstalled,
   isPythonInstalled,
+  getPythonPath,
   getPackageVersion,
   uninstallPackage,
   isUvInstalled,
@@ -58,10 +62,44 @@ import {
   getOpenTerminalLog,
   validateOpenTerminalProcess,
   getOpenTerminalProjectFolder,
+  getOpenTerminalDefaultProjectFolder,
   setOpenTerminalProjectFolder,
-  clearOpenTerminalProjectFolder,
-  applyOpenTerminalProjectFolder
+  setOpenTerminalDefaultProjectFolder,
+  clearOpenTerminalDefaultProjectFolder,
+  applyOpenTerminalProjectFolder,
+  rememberOpenTerminalProjectFolder
 } from './utils/open-terminal'
+
+import { syncOpenWebUISkills, syncBundledVisualProfile } from './utils/openwebui-skills'
+
+import { syncAsuswrtMcpConfig, testAsuswrtSsh } from './utils/asuswrt-mcp'
+
+import {
+  createTemporaryWorkspace,
+  ensureTemporaryWorkspaceRoot,
+  finishWorkspaceTask,
+  getLatestWorkspaceState,
+  isTemporaryWorkspacePath,
+  migrateTemporaryWorkspace,
+  openWorkspaceFile,
+  readWorkspaceFile,
+  rollbackWorkspaceCheckpoint,
+  startWorkspaceTask
+} from './utils/workspace'
+
+import {
+  createDesktopCompanionPairing,
+  startDesktopCompanion,
+  stopDesktopCompanion
+} from './utils/desktop-companion'
+
+import {
+  getDrawThingsBridgeConnection,
+  registerDrawThingsContext,
+  startDrawThingsBridge,
+  stopDrawThingsBridge,
+  testDrawThingsConnection
+} from './utils/draw-things'
 
 import {
   setupLlamaCpp,
@@ -163,10 +201,116 @@ let CONFIG: AppConfig | null = null
 let SERVER_URL: string | null = null
 let SERVER_STATUS: string | null = null
 let SERVER_REACHABLE = false
+
+const LOCAL_TOOL_CONNECT_SOURCES = ['http://127.0.0.1:*', 'http://localhost:*']
+
+/**
+ * Open WebUI commonly ships restrictive connect-src and img-src policies.
+ * Desktop-owned OpenAPI tools and their short-lived artifact previews run on
+ * loopback, so explicitly allow only loopback HTTP ports while leaving every
+ * other CSP directive untouched.
+ */
+const installLocalToolCspAccess = (targetSession: Electron.Session): void => {
+  const marker = '__openWebuiDesktopLocalToolCspAccess'
+  if ((targetSession as any)[marker]) return
+  ;(targetSession as any)[marker] = true
+
+  targetSession.webRequest.onHeadersReceived((details, callback) => {
+    const responseHeaders = details.responseHeaders ?? {}
+    const cspKey = Object.keys(responseHeaders).find(
+      (key) => key.toLowerCase() === 'content-security-policy'
+    )
+    if (!cspKey) {
+      callback({ responseHeaders })
+      return
+    }
+
+    responseHeaders[cspKey] = (responseHeaders[cspKey] ?? []).map((policy) => {
+      const directives = policy
+        .split(';')
+        .map((directive) => directive.trim())
+        .filter(Boolean)
+      for (const directiveName of ['connect-src', 'img-src']) {
+        const directiveIndex = directives.findIndex((directive) =>
+          directive.toLowerCase().startsWith(directiveName)
+        )
+
+        if (directiveIndex >= 0) {
+          const sources = directives[directiveIndex].split(/\s+/)
+          for (const source of LOCAL_TOOL_CONNECT_SOURCES) {
+            if (!sources.includes(source)) sources.push(source)
+          }
+          directives[directiveIndex] = sources.join(' ')
+        } else {
+          directives.push(`${directiveName} 'self' ${LOCAL_TOOL_CONNECT_SOURCES.join(' ')}`)
+        }
+      }
+      return directives.join('; ')
+    })
+
+    callback({ responseHeaders })
+  })
+}
 let SERVER_PID: number | null = null
 let AUTH_TOKEN: string | null = null
 const AUTH_TOKENS = new Map<string, string>()
 let voiceInputRecording = false
+
+const syncDesktopCompanion = async (): Promise<void> => {
+  if (!CONFIG) return
+  if (CONFIG.companion?.enabled && !CONFIG.companion.apiKey) {
+    await setConfig({
+      companion: {
+        ...CONFIG.companion,
+        apiKey: randomBytes(32).toString('hex')
+      }
+    })
+    CONFIG = await getConfig()
+  }
+  try {
+    await startDesktopCompanion(CONFIG.companion)
+  } catch (error) {
+    log.error('Desktop Companion API could not start:', error)
+  }
+}
+
+const getReachableCompanionHost = (): string => {
+  const configuredHost = String(CONFIG?.companion?.host ?? '').trim()
+  if (configuredHost && !['0.0.0.0', '::', '127.0.0.1', 'localhost', '::1'].includes(configuredHost)) {
+    return configuredHost
+  }
+  const interfaces = os.networkInterfaces()
+  for (const entries of Object.values(interfaces)) {
+    for (const entry of entries ?? []) {
+      if (entry.family === 'IPv4' && !entry.internal) return entry.address
+    }
+  }
+  throw new Error('找不到可供手機使用的區域網路 IP。請確認 Wi-Fi 或 ZeroTier／Tailscale 已連線。')
+}
+
+const createDesktopPairing = async (): Promise<{ pairingUrl: string; expiresAt: string }> => {
+  await syncDesktopCompanion()
+  const pairing = createDesktopCompanionPairing()
+  const host = getReachableCompanionHost()
+  const port = CONFIG?.companion?.port ?? 39280
+  return {
+    pairingUrl: `http://${host}:${port}/api/desktop/pair/${encodeURIComponent(pairing.code)}`,
+    expiresAt: pairing.expiresAt
+  }
+}
+
+const rememberRecentProject = async (folderPath: string): Promise<void> => {
+  const config = await getConfig()
+  const existing = config.workspace?.recentProjects ?? []
+  const recentProjects = [folderPath, ...existing.filter((item) => item !== folderPath)].slice(0, 8)
+  await setConfig({
+    workspace: {
+      ...(config.workspace ?? { panelOpen: true }),
+      recentProjects
+    }
+  })
+  CONFIG = await getConfig()
+}
 
 // ─── Global Shortcuts ───────────────────────────────────
 
@@ -747,17 +891,17 @@ function createContentWindow(url: string, connectionId: string): BrowserWindow {
   })
 
   // Enable media capture
-  session
-    .fromPartition(`persist:connection-${connectionId}`)
-    .setPermissionRequestHandler((_webContents, permission, callback) => {
-      const allowedPermissions = [
-        'media',
-        'mediaKeySystem',
-        'notifications',
-        'clipboard-sanitized-write'
-      ]
-      callback(allowedPermissions.includes(permission))
-    })
+  const contentSession = session.fromPartition(`persist:connection-${connectionId}`)
+  installLocalToolCspAccess(contentSession)
+  contentSession.setPermissionRequestHandler((_webContents, permission, callback) => {
+    const allowedPermissions = [
+      'media',
+      'mediaKeySystem',
+      'notifications',
+      'clipboard-sanitized-write'
+    ]
+    callback(allowedPermissions.includes(permission))
+  })
 
   contentWindow.on('ready-to-show', () => {
     contentWindow?.show()
@@ -1223,90 +1367,257 @@ const parseResponseError = async (response: Response): Promise<string> => {
 }
 
 /**
- * Register the desktop's localhost Open Terminal as a personal/direct
- * connection on the active remote Open WebUI account. A system-level
- * connection would resolve 127.0.0.1 on the server, not on this PC.
+ * Desktop tools are host-local services. They are attached to each desktop
+ * chat request by the content preload, so they must not be written into the
+ * Open WebUI account's persistent `ui.terminalServers` list. That list is also
+ * used by phones and remote browsers; there, 127.0.0.1 points at the phone or
+ * browser host and produces a red "connection failed" toast even while the
+ * desktop app is working normally.
+ *
+ * Older desktop builds did persist these entries. Remove only entries that
+ * this app owns, leaving user-configured terminal servers untouched.
  */
-const ensurePersonalTerminalConnection = async (
-  connectionId: string,
-  connectionUrl: string,
-  terminal: { url: string; apiKey: string }
-): Promise<{ changed: boolean; warning?: string }> => {
-  const token = AUTH_TOKENS.get(connectionId) || AUTH_TOKEN
-  if (!token) {
-    return {
-      changed: false,
-      warning:
-        'Open WebUI is not signed in yet. Reload the chat, then choose the project folder again.'
-    }
+const MANAGED_LOCAL_TOOL_NAMES = new Set([
+  'Desktop Project Files',
+  'Desktop Open Terminal',
+  'Desktop Draw Things'
+])
+
+const isLoopbackUrl = (value: unknown): boolean => {
+  if (typeof value !== 'string') return false
+  try {
+    const hostname = new URL(value).hostname.toLowerCase()
+    return hostname === '127.0.0.1' || hostname === 'localhost' || hostname === '::1'
+  } catch {
+    return false
   }
+}
+
+const cleanupManagedPersonalToolServers = async (
+  connectionId: string,
+  connectionUrl: string
+): Promise<{ changed: boolean }> => {
+  const token = AUTH_TOKENS.get(connectionId) || AUTH_TOKEN
+  if (!token || !connectionUrl) return { changed: false }
 
   let baseUrl: string
   try {
     const parsed = new URL(connectionUrl)
-    if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('Unsupported protocol')
+    if (!['http:', 'https:'].includes(parsed.protocol)) return { changed: false }
     baseUrl = connectionUrl.replace(/\/$/, '')
   } catch {
-    throw new Error('The active Open WebUI connection URL is invalid.')
+    return { changed: false }
   }
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+    const settingsUrl = `${baseUrl}/api/v1/users/user/settings`
+    const getResponse = await fetch(`${settingsUrl}?raw=true`, {
+      headers,
+      signal: AbortSignal.timeout(10000)
+    })
+    if (!getResponse.ok) {
+      log.debug(`Could not inspect Open WebUI personal tool servers (HTTP ${getResponse.status})`)
+      return { changed: false }
+    }
+
+    const currentSettings = (await getResponse.json()) ?? {}
+    const ui =
+      currentSettings.ui && typeof currentSettings.ui === 'object' ? { ...currentSettings.ui } : {}
+    const existingServers = Array.isArray(ui.terminalServers) ? ui.terminalServers : []
+    const terminalServers = existingServers.filter((server: any) => {
+      const managedName = MANAGED_LOCAL_TOOL_NAMES.has(String(server?.name ?? ''))
+      return !(managedName && isLoopbackUrl(server?.url))
+    })
+    if (terminalServers.length === existingServers.length) return { changed: false }
+
+    const updateResponse = await fetch(`${settingsUrl}/update`, {
+      method: 'POST',
+      headers,
+      signal: AbortSignal.timeout(10000),
+      body: JSON.stringify({ ui: { ...ui, terminalServers } })
+    })
+    if (!updateResponse.ok) {
+      log.debug(`Could not clean Open WebUI personal tool servers (HTTP ${updateResponse.status})`)
+      return { changed: false }
+    }
+    log.info(`Removed ${existingServers.length - terminalServers.length} stale desktop-local tool server(s)`)
+    return { changed: true }
+  } catch (error) {
+    // This is background hygiene. A sleeping/offline Open WebUI server must
+    // never turn into a red project error or interrupt the current chat.
+    log.debug('Could not clean stale desktop-local tool servers:', error)
+    return { changed: false }
   }
-  const settingsUrl = `${baseUrl}/api/v1/users/user/settings`
-  const getResponse = await fetch(`${settingsUrl}?raw=true`, {
-    headers,
-    signal: AbortSignal.timeout(10000)
-  })
-  if (!getResponse.ok) {
-    throw new Error(
-      `Could not read personal Open WebUI settings: ${await parseResponseError(getResponse)}`
+}
+
+/**
+ * Keep the old call sites safe while changing persistence semantics. The
+ * actual local tool server is still attached directly to the active request;
+ * this function only removes entries created by older desktop releases.
+ */
+const ensurePersonalTerminalConnection = async (
+  _connectionId: string,
+  _connectionUrl: string,
+  _terminal: { url: string; apiKey: string }
+): Promise<{ changed: boolean }> => ({ changed: false })
+
+const ensurePersonalDrawThingsConnection = async (
+  _connectionId: string,
+  _connectionUrl: string,
+  _server: { url: string; key: string }
+): Promise<{ changed: boolean }> => ({ changed: false })
+
+const resolveOpenApiSchema = (schema: any, components: any): any => {
+  if (!schema || typeof schema !== 'object') return schema ?? {}
+
+  if (typeof schema.$ref === 'string' && schema.$ref.startsWith('#/components/schemas/')) {
+    const name = schema.$ref.slice('#/components/schemas/'.length)
+    return resolveOpenApiSchema(components?.schemas?.[name] ?? {}, components)
+  }
+
+  if (Array.isArray(schema.allOf)) {
+    return schema.allOf.reduce((combined: any, item: any) => {
+      const resolved = resolveOpenApiSchema(item, components)
+      return {
+        ...combined,
+        ...resolved,
+        properties: { ...(combined.properties ?? {}), ...(resolved.properties ?? {}) },
+        required: [...new Set([...(combined.required ?? []), ...(resolved.required ?? [])])]
+      }
+    }, {})
+  }
+
+  const resolved = { ...schema }
+  if (schema.properties) {
+    resolved.properties = Object.fromEntries(
+      Object.entries(schema.properties).map(([key, value]) => [
+        key,
+        resolveOpenApiSchema(value, components)
+      ])
     )
   }
+  if (schema.items) resolved.items = resolveOpenApiSchema(schema.items, components)
+  return resolved
+}
 
-  const currentSettings = (await getResponse.json()) ?? {}
-  const ui =
-    currentSettings.ui && typeof currentSettings.ui === 'object' ? { ...currentSettings.ui } : {}
-  const existingServers = Array.isArray(ui.terminalServers) ? ui.terminalServers : []
-  const normalizedTerminalUrl = terminal.url.replace(/\/$/, '')
-  const existingIndex = existingServers.findIndex(
-    (server: any) => server?.url?.replace(/\/$/, '') === normalizedTerminalUrl
-  )
-  const nextConnection = {
-    ...(existingIndex >= 0 ? existingServers[existingIndex] : {}),
-    url: normalizedTerminalUrl,
+const openApiToToolSpecs = (openapi: any): any[] => {
+  const specs: any[] = []
+  const methods = new Set(['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'])
+  if (!openapi?.paths) return specs
+
+  for (const pathItem of Object.values(openapi.paths) as any[]) {
+    if (!pathItem || typeof pathItem !== 'object') continue
+    const sharedParameters = Array.isArray(pathItem.parameters) ? pathItem.parameters : []
+
+    for (const [method, operation] of Object.entries(pathItem) as [string, any][]) {
+      if (!methods.has(method) || !operation?.operationId) continue
+
+      const spec: any = {
+        name: operation.operationId,
+        description: operation.description || operation.summary || 'No description available.',
+        parameters: { type: 'object', properties: {}, required: [] }
+      }
+      const parameters = new Map<string, any>()
+      for (const parameter of [...sharedParameters, ...(operation.parameters ?? [])]) {
+        if (parameter?.name) parameters.set(`${parameter.name}:${parameter.in ?? ''}`, parameter)
+      }
+      for (const parameter of parameters.values()) {
+        const schema = resolveOpenApiSchema(parameter.schema ?? {}, openapi.components)
+        let description = schema.description || parameter.description || ''
+        if (Array.isArray(schema.enum)) {
+          description += `${description ? '. ' : ''}Possible values: ${schema.enum.join(', ')}`
+        }
+        spec.parameters.properties[parameter.name] = { ...schema, description }
+        if (parameter.required) spec.parameters.required.push(parameter.name)
+      }
+
+      const bodySchema = operation.requestBody?.content?.['application/json']?.schema
+      if (bodySchema) {
+        const resolvedBody = resolveOpenApiSchema(bodySchema, openapi.components)
+        if (resolvedBody.properties) {
+          spec.parameters.properties = {
+            ...spec.parameters.properties,
+            ...resolvedBody.properties
+          }
+          spec.parameters.required = [
+            ...new Set([...(spec.parameters.required ?? []), ...(resolvedBody.required ?? [])])
+          ]
+        } else if (resolvedBody.type === 'array') {
+          spec.parameters = resolvedBody
+        }
+      }
+
+      specs.push(spec)
+    }
+  }
+  return specs
+}
+
+const getDirectTerminalToolServer = async (terminal: { url: string; apiKey: string }) => {
+  const baseUrl = terminal.url.replace(/\/$/, '')
+  const response = await fetch(`${baseUrl}/openapi.json`, {
+    headers: { Authorization: `Bearer ${terminal.apiKey.trim()}` },
+    signal: AbortSignal.timeout(5000)
+  })
+  if (!response.ok) {
+    throw new Error(`Could not load the local file tools (HTTP ${response.status}).`)
+  }
+  const openapi = await response.json()
+  const specs = openApiToToolSpecs(openapi)
+  if (!specs.length) throw new Error('The local terminal returned no file tools.')
+
+  return {
+    url: baseUrl,
     key: terminal.apiKey,
     name: 'Desktop Project Files',
     path: '/openapi.json',
     auth_type: 'bearer',
     enabled: true,
-    config: existingIndex >= 0 ? (existingServers[existingIndex]?.config ?? {}) : {}
+    config: { enable: true },
+    openapi,
+    info: openapi.info,
+    specs,
+    is_terminal: true
   }
+}
 
-  const unchanged =
-    existingIndex >= 0 &&
-    existingServers[existingIndex]?.key === nextConnection.key &&
-    existingServers[existingIndex]?.enabled === true
-  if (unchanged) return { changed: false }
-
-  const terminalServers = [...existingServers]
-  if (existingIndex >= 0) terminalServers[existingIndex] = nextConnection
-  else terminalServers.push(nextConnection)
-
-  const updateResponse = await fetch(`${settingsUrl}/update`, {
-    method: 'POST',
-    headers,
-    signal: AbortSignal.timeout(10000),
-    body: JSON.stringify({ ui: { ...ui, terminalServers } })
+const getDrawThingsToolServer = async (options: {
+  projectPath: string
+  chatId?: string
+  connectionId: string
+  connectionUrl: string
+  apiUrl: string
+  autoLaunch: boolean
+  bridgePort: number
+}) => {
+  const registration = await registerDrawThingsContext({
+    projectPath: options.projectPath,
+    chatId: options.chatId,
+    apiUrl: options.apiUrl,
+    connectionUrl: options.connectionUrl,
+    authToken: AUTH_TOKENS.get(options.connectionId) || AUTH_TOKEN || '',
+    autoLaunch: options.autoLaunch,
+    bridgePort: options.bridgePort
   })
-  if (!updateResponse.ok) {
-    throw new Error(
-      `Could not save the personal terminal connection: ${await parseResponseError(updateResponse)}`
-    )
-  }
+  const specs = openApiToToolSpecs(registration.openapi)
+  if (!specs.length) throw new Error('The Draw Things bridge returned no image tools.')
 
-  return { changed: true }
+  return {
+    url: registration.url,
+    key: registration.key,
+    name: 'Desktop Draw Things',
+    path: '/openapi.json',
+    auth_type: 'bearer',
+    enabled: true,
+    config: { enable: true },
+    openapi: registration.openapi,
+    info: registration.openapi.info,
+    specs
+  }
 }
 
 // ─── App Lifecycle ──────────────────────────────────────
@@ -1334,6 +1645,43 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     CONFIG = await getConfig()
+    // A desktop chat should have host-local file/command tools available
+    // before the first prompt.  Older builds persisted `enabled: false`,
+    // which left Skills able to plan an artifact but with no tool server to
+    // execute it, resulting in a completed assistant message with empty
+    // content.  Preserve an explicit Settings opt-out, while migrating the
+    // legacy unset/disabled state to the desktop-first default once.
+    if (!CONFIG.openTerminal?.enabled) {
+      await setConfig({
+        openTerminal: {
+          ...CONFIG.openTerminal,
+          enabled: true
+        }
+      })
+      CONFIG = await getConfig()
+    }
+    if (CONFIG.drawThings?.enabled) {
+      await startDrawThingsBridge(CONFIG.drawThings.bridgePort).catch((error) => {
+        log.warn('Could not start Draw Things bridge during launch:', error)
+      })
+    }
+    if ((CONFIG.workspace?.projectIsolationVersion ?? 0) < 1) {
+      const temporaryRoot = await ensureTemporaryWorkspaceRoot()
+      await setConfig({
+        openTerminal: {
+          ...CONFIG.openTerminal,
+          cwd: temporaryRoot,
+          defaultProjectFolders: {}
+        },
+        workspace: {
+          ...(CONFIG.workspace ?? { recentProjects: [], panelOpen: true }),
+          projectIsolationVersion: 1
+        }
+      })
+      CONFIG = await getConfig()
+      log.info('Migrated project folders to isolated one-shot workspaces')
+    }
+    await syncDesktopCompanion()
     loadSpotlightPosition()
     log.info('Config:', CONFIG)
 
@@ -1398,10 +1746,12 @@ if (!gotTheLock) {
     session.defaultSession.setCertificateVerifyProc((_request, callback) => {
       callback(0) // 0 = verified/trusted
     })
+    installLocalToolCspAccess(session.defaultSession)
 
     // Webviews use partitioned sessions (persist:connection-*). Each
     // new partition's session also needs to trust all certs.
     app.on('session-created', (newSession) => {
+      installLocalToolCspAccess(newSession)
       newSession.setCertificateVerifyProc((_request, callback) => {
         callback(0)
       })
@@ -1565,6 +1915,7 @@ if (!gotTheLock) {
     ipcMain.handle('set:config', async (_event, config) => {
       await setConfig(config)
       CONFIG = await getConfig()
+      await syncDesktopCompanion()
       updateTray()
       voiceInputRecording = false
       registerShortcuts(
@@ -1573,6 +1924,24 @@ if (!gotTheLock) {
         CONFIG.voiceInputShortcut,
         CONFIG.callShortcut
       )
+    })
+
+    ipcMain.handle('draw-things:test', async (_event, apiUrl?: string) => {
+      const config = await getConfig()
+      return testDrawThingsConnection(apiUrl || config.drawThings.apiUrl)
+    })
+
+    ipcMain.handle('asuswrt-mcp:test', async (_event, settings) => {
+      return testAsuswrtSsh(settings ?? {})
+    })
+
+    ipcMain.handle('asuswrt-mcp:save', async (_event, settings) => {
+      const current = await getConfig()
+      const next = { ...(current.asuswrtMcp ?? {}), ...(settings ?? {}) }
+      const result = await syncAsuswrtMcpConfig(next, isPythonInstalled() ? getPythonPath() : '')
+      await setConfig({ asuswrtMcp: result.config })
+      CONFIG = await getConfig()
+      return result
     })
 
     // Python/uv
@@ -1660,6 +2029,7 @@ if (!gotTheLock) {
       pid: SERVER_PID,
       reachable: SERVER_REACHABLE
     }))
+    ipcMain.handle('desktop-companion:pairing:create', () => createDesktopPairing())
 
     // Connections (remote only — local is virtual)
     ipcMain.handle('connections:list', async () => {
@@ -1752,14 +2122,55 @@ if (!gotTheLock) {
     })
 
     // Auth token relay from webview
-    ipcMain.handle('app:setAuthToken', (_event, token: string, connectionId?: string) => {
-      AUTH_TOKEN = token || null
-      if (connectionId) {
-        if (token) AUTH_TOKENS.set(connectionId, token)
-        else AUTH_TOKENS.delete(connectionId)
+    ipcMain.handle(
+      'app:setAuthToken',
+      async (_event, token: string, connectionId?: string, connectionUrl?: string) => {
+        const normalizedToken = typeof token === 'string' ? token : ''
+        if (connectionId) {
+          const previousToken = AUTH_TOKENS.get(connectionId)
+          if (normalizedToken) {
+            AUTH_TOKENS.set(connectionId, normalizedToken)
+            AUTH_TOKEN = normalizedToken
+          } else {
+            AUTH_TOKENS.delete(connectionId)
+            if (!AUTH_TOKEN || AUTH_TOKEN === previousToken) {
+              AUTH_TOKEN = Array.from(AUTH_TOKENS.values()).at(-1) ?? null
+            }
+          }
+        } else {
+          AUTH_TOKEN = normalizedToken || null
+        }
+        log.info('Auth token updated from webview', connectionId ? `(${connectionId})` : '')
+
+        let skillsSync = { changed: false, created: 0, updated: 0, skipped: 0 }
+        if (normalizedToken && connectionId && connectionUrl) {
+          try {
+            skillsSync = await syncOpenWebUISkills(connectionUrl, normalizedToken)
+            await syncBundledVisualProfile(connectionUrl, normalizedToken)
+            if (skillsSync.changed) {
+              log.info(
+                `Open WebUI Skills synced (${skillsSync.created} new, ${skillsSync.updated} updated, ${skillsSync.skipped} skipped)`
+              )
+            }
+          } catch (error) {
+            // Skill sync is additive and must never block sign-in or chat startup.
+            log.warn('Could not sync Desktop Skills into Open WebUI:', error)
+          }
+        }
+
+        if (normalizedToken && connectionId && connectionUrl) {
+          // Remove stale localhost entries created by older desktop builds.
+          // Local tools are attached directly to each desktop request and
+          // should never remain in the account-wide terminal server list.
+          const cleanup = await cleanupManagedPersonalToolServers(connectionId, connectionUrl)
+          return {
+            drawThingsConnectionChanged: cleanup.changed,
+            skillsSync
+          }
+        }
+        return { drawThingsConnectionChanged: false, skillsSync }
       }
-      log.info('Auth token updated from webview', connectionId ? `(${connectionId})` : '')
-    })
+    )
 
     // Misc
     ipcMain.handle('app:reset', () => resetAppHandler())
@@ -2075,6 +2486,243 @@ if (!gotTheLock) {
       getOpenTerminalProjectFolder(connectionId, chatId)
     )
 
+    ipcMain.handle('open-terminal:project:default:get', (_event, connectionId: string) =>
+      getOpenTerminalDefaultProjectFolder(connectionId)
+    )
+
+    ipcMain.handle('open-terminal:project:is-temporary', (_event, folderPath?: string | null) =>
+      isTemporaryWorkspacePath(folderPath)
+    )
+
+    ipcMain.handle(
+      'open-terminal:project:default:select',
+      async (_event, options: { connectionId: string; connectionUrl: string }) => {
+        const existingPath = await getOpenTerminalDefaultProjectFolder(options.connectionId)
+        const config = await getConfig()
+        const result = await dialog.showOpenDialog(mainWindow!, {
+          title: 'Choose a project folder for new chats',
+          defaultPath: existingPath || config.openTerminal?.cwd || undefined,
+          buttonLabel: 'Use this folder',
+          properties: ['openDirectory', 'createDirectory']
+        })
+        if (result.canceled || !result.filePaths[0]) return { canceled: true }
+
+        const previousCwd = config.openTerminal?.cwd ?? ''
+        const selectedPath = result.filePaths[0]
+        const migration = await migrateTemporaryWorkspace(existingPath, selectedPath)
+        const projectPath = await setOpenTerminalDefaultProjectFolder(
+          options.connectionId,
+          selectedPath
+        )
+        await rememberRecentProject(projectPath)
+        CONFIG = await getConfig()
+
+        // New chat IDs do not exist until after their first request. Restarting
+        // with the selected folder as Open Terminal's root cwd guarantees that
+        // first-turn file tools already write to the intended project.
+        if (getOpenTerminalInfo().status === 'started' && previousCwd !== projectPath) {
+          await stopOpenTerminal()
+        }
+        const terminal = await ensureOpenTerminalStarted()
+
+        let directConnectionChanged = false
+        let warning: string | undefined
+        try {
+          const registration = await ensurePersonalTerminalConnection(
+            options.connectionId,
+            options.connectionUrl,
+            terminal
+          )
+          directConnectionChanged = registration.changed
+          warning = registration.warning
+        } catch (error) {
+          log.warn('Failed to register personal Open Terminal connection:', error)
+          warning = error?.message ?? 'Could not register the personal terminal connection.'
+        }
+
+        return {
+          canceled: false,
+          connectionId: options.connectionId,
+          path: projectPath,
+          temporary: false,
+          migration,
+          directConnectionChanged,
+          warning
+        }
+      }
+    )
+
+    ipcMain.handle(
+      'open-terminal:project:default:claim',
+      async (_event, options: { connectionId: string; chatId: string; connectionUrl: string }) => {
+        const folderPath = await getOpenTerminalDefaultProjectFolder(options.connectionId)
+        if (!folderPath) return null
+
+        const terminal = await ensureOpenTerminalStarted()
+        const project = await setOpenTerminalProjectFolder(
+          options.connectionId,
+          options.chatId,
+          folderPath
+        )
+        await clearOpenTerminalDefaultProjectFolder(options.connectionId)
+        CONFIG = await getConfig()
+
+        let directConnectionChanged = false
+        let warning: string | undefined
+        try {
+          const registration = await ensurePersonalTerminalConnection(
+            options.connectionId,
+            options.connectionUrl,
+            terminal
+          )
+          directConnectionChanged = registration.changed
+          warning = registration.warning
+        } catch (error) {
+          log.warn('Failed to restore personal Open Terminal connection:', error)
+          warning = error?.message ?? 'Could not restore the personal terminal connection.'
+        }
+
+        return {
+          ...project,
+          temporary: isTemporaryWorkspacePath(project.path),
+          directConnectionChanged,
+          warning
+        }
+      }
+    )
+
+    ipcMain.handle(
+      'open-terminal:project:prepare',
+      async (_event, options: { connectionId: string; chatId?: string; connectionUrl: string }) => {
+        const chatId = options.chatId?.trim() ?? ''
+        let folderPath = chatId
+          ? await getOpenTerminalProjectFolder(options.connectionId, chatId)
+          : null
+        // A pending folder belongs only to the not-yet-created chat. Never use
+        // it as a fallback for an existing chat that has no saved mapping.
+        const pendingFolder = chatId
+          ? null
+          : await getOpenTerminalDefaultProjectFolder(options.connectionId)
+        folderPath = folderPath || pendingFolder
+
+        if (folderPath) {
+          const stats = await fs.promises.stat(folderPath).catch(() => null)
+          if (!stats?.isDirectory()) {
+            if (pendingFolder) {
+              await clearOpenTerminalDefaultProjectFolder(options.connectionId)
+            }
+            folderPath = null
+          }
+        }
+
+        if (!folderPath) folderPath = await createTemporaryWorkspace()
+
+        if (!chatId) {
+          const config = await getConfig()
+          if (config.openTerminal?.cwd !== folderPath || !config.openTerminal?.enabled) {
+            const wasStarted = getOpenTerminalInfo().status === 'started'
+            await setOpenTerminalDefaultProjectFolder(options.connectionId, folderPath)
+            CONFIG = await getConfig()
+            if (wasStarted) await stopOpenTerminal()
+          }
+        }
+
+        let directConnectionChanged = false
+        let warning: string | undefined
+        let toolServer: Awaited<ReturnType<typeof getDirectTerminalToolServer>> | null = null
+        try {
+          const terminal = await ensureOpenTerminalStarted()
+          if (chatId) {
+            const existing = await getOpenTerminalProjectFolder(options.connectionId, chatId)
+            if (existing) {
+              folderPath = await applyOpenTerminalProjectFolder(chatId, existing)
+            } else {
+              const project = await setOpenTerminalProjectFolder(
+                options.connectionId,
+                chatId,
+                folderPath
+              )
+              folderPath = project.path
+              if (pendingFolder) {
+                await clearOpenTerminalDefaultProjectFolder(options.connectionId)
+              }
+              CONFIG = await getConfig()
+            }
+          }
+
+          try {
+            const registration = await ensurePersonalTerminalConnection(
+              options.connectionId,
+              options.connectionUrl,
+              terminal
+            )
+            directConnectionChanged = registration.changed
+            warning = registration.warning
+          } catch (error) {
+            log.warn('Failed to restore personal Open Terminal connection:', error)
+            warning = error?.message ?? 'Could not restore the personal terminal connection.'
+          }
+          toolServer = await getDirectTerminalToolServer(terminal)
+        } catch (error) {
+          log.warn('Open Terminal is unavailable; continuing with other desktop tools:', error)
+          warning = error?.message ?? 'Open Terminal is unavailable.'
+          if (chatId) {
+            const project = await rememberOpenTerminalProjectFolder(
+              options.connectionId,
+              chatId,
+              folderPath
+            )
+            folderPath = project.path
+            if (pendingFolder) {
+              await clearOpenTerminalDefaultProjectFolder(options.connectionId)
+            }
+            CONFIG = await getConfig()
+          }
+        }
+
+        const config = await getConfig()
+        let drawThingsToolServer: Awaited<ReturnType<typeof getDrawThingsToolServer>> | null = null
+        if (config.drawThings?.enabled) {
+          try {
+            drawThingsToolServer = await getDrawThingsToolServer({
+              projectPath: folderPath,
+              chatId,
+              connectionId: options.connectionId,
+              connectionUrl: options.connectionUrl,
+              apiUrl: config.drawThings.apiUrl,
+              autoLaunch: config.drawThings.autoLaunch,
+              bridgePort: config.drawThings.bridgePort
+            })
+            const imageRegistration = await ensurePersonalDrawThingsConnection(
+              options.connectionId,
+              options.connectionUrl,
+              drawThingsToolServer
+            )
+            directConnectionChanged = directConnectionChanged || imageRegistration.changed
+            warning = warning || imageRegistration.warning
+          } catch (error) {
+            log.warn('Could not attach Draw Things tools:', error)
+          }
+        }
+        return {
+          connectionId: options.connectionId,
+          chatId,
+          path: folderPath,
+          temporary: isTemporaryWorkspacePath(folderPath),
+          directConnectionChanged,
+          warning,
+          toolServer,
+          drawThingsToolServer
+        }
+      }
+    )
+
+    ipcMain.handle('open-terminal:project:default:clear', async (_event, connectionId: string) => {
+      await clearOpenTerminalDefaultProjectFolder(connectionId)
+      CONFIG = await getConfig()
+      return true
+    })
+
     ipcMain.handle(
       'open-terminal:project:select',
       async (_event, options: { connectionId: string; chatId: string; connectionUrl: string }) => {
@@ -2091,12 +2739,15 @@ if (!gotTheLock) {
         })
         if (result.canceled || !result.filePaths[0]) return { canceled: true }
 
+        const selectedPath = result.filePaths[0]
+        const migration = await migrateTemporaryWorkspace(existingPath, selectedPath)
         const terminal = await ensureOpenTerminalStarted()
         const project = await setOpenTerminalProjectFolder(
           options.connectionId,
           options.chatId,
-          result.filePaths[0]
+          selectedPath
         )
+        await rememberRecentProject(project.path)
         CONFIG = await getConfig()
 
         let directConnectionChanged = false
@@ -2117,6 +2768,8 @@ if (!gotTheLock) {
         return {
           canceled: false,
           ...project,
+          temporary: false,
+          migration,
           directConnectionChanged,
           warning
         }
@@ -2146,18 +2799,182 @@ if (!gotTheLock) {
           warning = error?.message ?? 'Could not restore the personal terminal connection.'
         }
 
-        return { path, directConnectionChanged, warning }
+        return {
+          path,
+          temporary: isTemporaryWorkspacePath(path),
+          directConnectionChanged,
+          warning
+        }
       }
     )
 
     ipcMain.handle(
       'open-terminal:project:clear',
       async (_event, connectionId: string, chatId: string) => {
-        await clearOpenTerminalProjectFolder(connectionId, chatId)
+        const temporaryPath = await createTemporaryWorkspace()
+        await ensureOpenTerminalStarted()
+        const project = await setOpenTerminalProjectFolder(connectionId, chatId, temporaryPath)
         CONFIG = await getConfig()
+        return { ...project, temporary: true }
+      }
+    )
+
+    ipcMain.handle('workspace:projects:list', async () => {
+      const config = await getConfig()
+      const candidates = [
+        ...(config.workspace?.recentProjects ?? []),
+        ...Object.values(config.openTerminal?.defaultProjectFolders ?? {}),
+        ...Object.values(config.openTerminal?.projectFolders ?? {}).flatMap((items) =>
+          Object.values(items ?? {})
+        )
+      ]
+      const seen = new Set<string>()
+      const projects: Array<{ path: string; name: string; available: boolean }> = []
+      for (const folderPath of candidates) {
+        if (!folderPath || seen.has(folderPath) || isTemporaryWorkspacePath(folderPath)) continue
+        seen.add(folderPath)
+        const stats = await fs.promises.stat(folderPath).catch(() => null)
+        projects.push({
+          path: folderPath,
+          name: path.basename(folderPath) || folderPath,
+          available: Boolean(stats?.isDirectory())
+        })
+      }
+      return projects.slice(0, 8)
+    })
+
+    ipcMain.handle(
+      'open-terminal:project:default:use',
+      async (
+        _event,
+        options: { connectionId: string; connectionUrl: string; folderPath: string }
+      ) => {
+        const config = await getConfig()
+        const previousCwd = config.openTerminal?.cwd ?? ''
+        const pendingPath = await getOpenTerminalDefaultProjectFolder(options.connectionId)
+        const migration = await migrateTemporaryWorkspace(pendingPath, options.folderPath)
+        const folderPath = await setOpenTerminalDefaultProjectFolder(
+          options.connectionId,
+          options.folderPath
+        )
+        await rememberRecentProject(folderPath)
+        if (getOpenTerminalInfo().status === 'started' && previousCwd !== folderPath) {
+          await stopOpenTerminal()
+        }
+        const terminal = await ensureOpenTerminalStarted()
+        let directConnectionChanged = false
+        let warning: string | undefined
+        try {
+          const registration = await ensurePersonalTerminalConnection(
+            options.connectionId,
+            options.connectionUrl,
+            terminal
+          )
+          directConnectionChanged = registration.changed
+          warning = registration.warning
+        } catch (error) {
+          warning = error?.message ?? 'Could not register the personal terminal connection.'
+        }
+        return {
+          path: folderPath,
+          temporary: false,
+          migration,
+          directConnectionChanged,
+          warning
+        }
+      }
+    )
+
+    ipcMain.handle(
+      'workspace:task:start',
+      async (_event, options: { connectionId: string; chatId?: string }) => {
+        const chatId = options.chatId?.trim() ?? ''
+        const projectPath = chatId
+          ? await getOpenTerminalProjectFolder(options.connectionId, chatId)
+          : await getOpenTerminalDefaultProjectFolder(options.connectionId)
+        if (!projectPath) return null
+        const checkpoint = await startWorkspaceTask({
+          connectionId: options.connectionId,
+          chatId,
+          projectPath
+        })
+        sendToRenderer('workspace:changed', {
+          connectionId: options.connectionId,
+          checkpointId: checkpoint.id
+        })
+        return checkpoint
+      }
+    )
+
+    ipcMain.handle(
+      'workspace:task:finish',
+      async (_event, options: { checkpointId: string; error?: string }) => {
+        if (!options.checkpointId) return null
+        const checkpoint = await finishWorkspaceTask(options.checkpointId, options.error)
+        sendToRenderer('workspace:changed', {
+          connectionId: checkpoint.connectionId,
+          checkpointId: checkpoint.id,
+          status: checkpoint.status,
+          artifactCount: checkpoint.artifacts.length,
+          changeCount: checkpoint.changes.length
+        })
+        if (checkpoint.status === 'complete') {
+          new Notification({
+            title: 'Open WebUI 工作完成',
+            body: checkpoint.changes.length
+              ? `已完成，偵測到 ${checkpoint.changes.length} 項檔案變更。`
+              : '模型已完成回應。'
+          }).show()
+        }
+        return checkpoint
+      }
+    )
+
+    ipcMain.handle(
+      'workspace:state:get',
+      (_event, options: { connectionId: string; chatId?: string; projectPath?: string | null }) =>
+        getLatestWorkspaceState(options)
+    )
+
+    ipcMain.handle(
+      'workspace:file:read',
+      (
+        _event,
+        options: {
+          checkpointId: string
+          relativePath: string
+          version?: 'before' | 'after'
+        }
+      ) => readWorkspaceFile(options)
+    )
+
+    ipcMain.handle(
+      'workspace:file:open',
+      async (_event, options: { checkpointId: string; relativePath: string }) => {
+        const filePath = await openWorkspaceFile(options.checkpointId, options.relativePath)
+        const result = await shell.openPath(filePath)
+        if (result) throw new Error(result)
         return true
       }
     )
+
+    ipcMain.handle(
+      'workspace:file:reveal',
+      async (_event, options: { checkpointId: string; relativePath: string }) => {
+        const filePath = await openWorkspaceFile(options.checkpointId, options.relativePath)
+        shell.showItemInFolder(filePath)
+        return true
+      }
+    )
+
+    ipcMain.handle('workspace:checkpoint:rollback', async (_event, checkpointId: string) => {
+      const checkpoint = await rollbackWorkspaceCheckpoint(checkpointId)
+      sendToRenderer('workspace:changed', {
+        connectionId: checkpoint.connectionId,
+        checkpointId: checkpoint.id
+      })
+      return checkpoint
+    })
 
     // llama.cpp
     ipcMain.handle('llamacpp:setup', async () => {
@@ -2335,6 +3152,14 @@ if (!gotTheLock) {
       return result.canceled ? null : (result.filePaths[0] ?? null)
     })
 
+    ipcMain.handle('dialog:selectFile', async (_event, options?: { title?: string }) => {
+      const result = await dialog.showOpenDialog(mainWindow!, {
+        title: options?.title,
+        properties: ['openFile']
+      })
+      return result.canceled ? null : (result.filePaths[0] ?? null)
+    })
+
     ipcMain.handle('app:launchAtLogin:get', () => {
       return app.getLoginItemSettings().openAtLogin
     })
@@ -2415,6 +3240,28 @@ if (!gotTheLock) {
     validateOpenTerminalProcess()
     validateLlamaCppProcess()
 
+    // Project folders selected by older Desktop builds may predate the
+    // auto-start flag. Start Open Terminal before creating the webview so the
+    // page's initial Direct Terminal discovery can reach localhost.
+    const configuredProjectFolders = CONFIG?.openTerminal?.defaultProjectFolders ?? {}
+    const startupProjectFolder =
+      configuredProjectFolders[CONFIG?.defaultConnectionId ?? ''] ??
+      Object.values(configuredProjectFolders).find((folder) => !!folder)
+    if (
+      startupProjectFolder &&
+      existsSync(startupProjectFolder) &&
+      (!CONFIG?.openTerminal?.enabled || CONFIG?.openTerminal?.cwd !== startupProjectFolder)
+    ) {
+      await setConfig({
+        openTerminal: {
+          ...CONFIG.openTerminal,
+          enabled: true,
+          cwd: startupProjectFolder
+        }
+      })
+      CONFIG = await getConfig()
+    }
+
     // Auto-start Open Terminal if previously enabled
     if (CONFIG?.openTerminal?.enabled) {
       try {
@@ -2488,6 +3335,8 @@ if (!gotTheLock) {
 
   app.on('before-quit', async () => {
     isQuiting = true
+    await stopDesktopCompanion()
+    await stopDrawThingsBridge()
     await stopLlamaCpp()
     await stopOpenTerminal()
     await stopServerHandler()

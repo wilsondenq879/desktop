@@ -1,0 +1,7 @@
+# PNG export without external Cairo/GTK; upstream MIT license, Rust dependencies
+# retain their own notices in the installed wheel. Python 3.10+.
+resvg-py==0.5.0
+# Deployment / authenticated regression helpers (already dependencies of WebUI).
+requests==2.34.2
+PyJWT==2.13.0
+python-dotenv==1.2.4

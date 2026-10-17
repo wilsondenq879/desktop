@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/yizhiyanhua-ai/fireworks-tech-graph",
+  "commit": "31fea364eda5f1852b1175f3d9e29ea31d22dcb4",
+  "version": "1.2.0",
+  "license": "MIT",
+  "imported_at": "2026-10-09",
+  "integration": "Open WebUI Desktop managed Skill runtime"
+}

@@ -5,13 +5,17 @@ Open WebUI Desktop can link a local folder to each saved chat. The link is store
 ## Windows workflow
 
 1. Connect Desktop to your Open WebUI server and sign in.
-2. Open a saved chat (`/c/<chat-id>`).
-3. Click **Choose project** in the Desktop status bar.
-4. Pick a folder in the native Windows folder picker.
+2. Optionally click **Choose project** in the Desktop status bar before starting a new chat.
+3. Pick a folder in the native Windows folder picker, or start immediately in a temporary workspace.
+4. Start the new chat. Desktop prepares the folder and local file tools before the first request is sent.
 
-Desktop will start or install Open Terminal when needed, configure the chat's session working directory, and add the localhost Open Terminal as a personal Direct Terminal connection for the signed-in Open WebUI account. If the personal connection is added for the first time, the embedded page reloads once so Open WebUI can use it immediately.
+The selected folder is a one-shot choice for the next new chat only. It is cleared after that chat claims it, so a later new chat can never inherit the preceding chat's folder. Existing chats keep their own saved mapping and never fall back to a pending new-chat selection. Desktop starts Open Terminal with the selected folder as its root working directory, configures each saved chat's session directory, and attaches the localhost file tools to each chat request. The embedded page reloads after folder selection so Open WebUI can refresh its local tools.
 
-Use the adjacent actions to open the folder in File Explorer or unlink it from the chat. Unlinking does not delete any files.
+If no folder is selected, Desktop creates a unique temporary workspace under its application data directory. The model can create files there immediately without asking where to save them. When the user later chooses a permanent project folder for that chat, Desktop recursively moves the temporary files into it. Existing destination files are never overwritten: conflicting files receive an `Open WebUI tmp` suffix, and unsupported entries remain in the temporary workspace for review.
+
+When a request produces a file, Desktop identifies the selected project folder as the default destination. The model is instructed to create and verify the artifact there without asking the user to repeat the location, and it must not fall back to a generic "the browser cannot access your filesystem" response while the Desktop tools are available.
+
+Use the adjacent actions to open the folder in File Explorer or unlink it from the chat. Unlinking does not delete any files; the chat switches to a fresh isolated temporary workspace.
 
 ## Requirements
 

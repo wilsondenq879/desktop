@@ -1,0 +1,174 @@
+[
+  {
+    "name": "render_technical_architecture",
+    "description": "繪製含設備圖示、交換器面板、真實分支的 PNG/SVG，提供可放大 HTML 預覽；使用 64 個通用向量圖示。",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "nodes": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 14,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "detail": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string",
+                "description": "可省略由設備名稱自動選取；常用 nas,workstation,mini-pc,gpu,network-card,router,switch,rdma-switch,aggregation-switch,vpn,users,ai-model,agent,mcp,api,cloud,database。"
+              },
+              "port_groups": {
+                "type": "array",
+                "maxItems": 4,
+                "description": "僅已知的連接埠規格；未提供規格時留空，禁止猜測。",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {"type":"string"},
+                    "count": {"type":"integer","minimum":1,"maximum":24},
+                    "tone": {"type":"string","enum":["network","active","remote","default","blocked"]}
+                  },
+                  "required": ["label","count"]
+                }
+              },
+              "group": {
+                "type": "string"
+              },
+              "tone": {
+                "type": "string",
+                "enum": [
+                  "default",
+                  "network",
+                  "active",
+                  "remote",
+                  "blocked"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "level"
+            ]
+          }
+        },
+        "edges": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 22,
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "tone": {
+                "type": "string",
+                "enum": [
+                  "default",
+                  "network",
+                  "active",
+                  "remote",
+                  "blocked"
+                ]
+              },
+              "dashed": {
+                "type": "boolean"
+              },
+              "direction": {
+                "type":"string",
+                "enum":["none","forward","both"],
+                "description":"實體網路連線用 none；有方向的邏輯流才加箭頭。"
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ]
+          }
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ]
+          }
+        },
+        "visual_family": {
+          "type": "string",
+          "enum": [
+            "network",
+            "rdma",
+            "hardware",
+            "software",
+            "cloud",
+            "api",
+            "workflow",
+            "clean"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "nodes",
+        "edges"
+      ]
+    }
+  },
+  {
+    "name": "render_data_chart",
+    "description": "將有依據、同單位、條件可比的數值畫成深色比較／趨勢成品圖，輸出 PNG/SVG/HTML 數據表/CSV。不需桌面連線，不得編造或補零；引用和實測必須有來源。",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": {"type":"string"},
+        "labels": {"type":"array","minItems":1,"maxItems":48,"items":{"type":"string"}},
+        "series": {"type":"array","minItems":0,"maxItems":4,"items":{"type":"object","properties":{"name":{"type":"string"},"values":{"type":"array","items":{"type":"number"}}},"required":["name","values"]}},
+        "unit": {"type":"string","description":"一般系列須同單位；scatter/bubble 分軸單位用 options；日期甘特 tasks 提供日期且 series=[]。"},
+        "data_kind": {"type":"string","enum":["measured","reported","estimated","illustrative","user_provided"]},
+        "chart_type": {"type":"string","enum":["auto","bar","horizontal_bar","line","area","tornado","radar","gauge","waterfall","pie","doughnut","stacked_column","percent_stacked_column","treemap","scatter","bubble","gantt","funnel","quadrant"],"default":"auto"},
+        "options": {"type":"object","description":"圖型選項：radar max；gauge min/max/target；waterfall roles（total/change）；treemap parents；scatter/bubble x_unit/y_unit/size_unit；gantt tasks（start/end/progress，可計畫日期）或progress。"},
+        "sources": {"type":"array","items":{"type":"string"},"description":"引用／實測的出處與測試條件。"},
+        "note": {"type":"string","description":"估算／示意必填假設及非實測說明。"},
+        "better": {"type":"string","enum":["higher","lower","neutral"],"default":"neutral"}
+      },
+      "required": ["title","labels","series","unit","data_kind"]
+    }
+  }
+]

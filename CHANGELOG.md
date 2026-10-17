@@ -5,6 +5,125 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.33] - 2026-10-09
+
+### Added
+
+- **Fireworks 技術架構圖 Skill.** Open WebUI now ships the complete Fireworks Tech Graph 1.2.0 runtime (schemas, templates, SVG renderer, quality checks, PNG/HTML export paths, and MIT attribution), not only a prompt. Architecture, topology, GPU/RDMA, API/MCP, and technical workflow requests now route to this Skill first and produce previewable project artifacts.
+- **Native Fireworks renderer Tool.** Architecture requests can now invoke a server-side Tool that creates a per-request Fireworks SVG artifact, attaches it to the chat, and reports progress through compact status updates.
+- **Technical architecture diagram Skill.** Open WebUI now includes a native `技術架構圖設計` Skill for network topology, AI/GPU/RDMA systems, layered software architecture, API/MCP integration, and technical flows. It defines device types, architecture zones, semantic connections, and strict factual-quality rules.
+- **Server-side Skill semantic routing.** A global inlet Filter uses the configured local multilingual embedding model plus conservative keyword and intent scoring to load the one or two most relevant Skills before inference. Explicit `/Skill` selections remain authoritative, and per-user modes support automatic, suggest-only, or manual behavior.
+
+### Changed
+
+- **One architecture renderer at a time.** The legacy inline React+SVG protocol remains a fallback, but no longer competes with or overrides Fireworks when the semantic router selects it.
+- **Architecture-quality responsive diagrams.** React + SVG cards now understand hardware roles, grouped zones, bidirectional paths, and vertical or horizontal hierarchy. Desktop shows full architecture groupings while phone layouts automatically become readable vertical topologies instead of shrinking every layer into one row.
+
+### Fixed
+
+- **No diagram source in streamed chat.** The retired `openwebui-diagram` JSON contract is no longer injected for Fireworks requests. While an architecture is rendering, users see only a concise drawing status; completed responses contain the SVG artifact rather than JSON, Mermaid, or source code.
+- **Diagrams no longer share one generic card.** The renderer chooses a Fireworks visual family for network/RDMA, hardware, software, cloud, API, workflow, or clean architecture diagrams instead of rendering all topics through the same topology template.
+- **Model picker labels stay in the picker.** Capability icons now appear only for the available choices after opening the model menu; the compact selected-model control in the composer remains uncluttered.
+- **Renderable technical diagrams for every model.** Open WebUI now has a server-side global Filter that asks technical architecture, networking, RDMA, hardware-connection, and comparison questions to use the React + SVG diagram protocol rather than Mermaid or ASCII—even for models without a custom per-model prompt.
+- **React + SVG diagram cards.** The local Open WebUI web frontend now turns a constrained `openwebui-diagram` JSON response into a responsive, zoomable SVG card. This replaces fragile Mermaid parsing and is shared by browser and mobile WebView sessions.
+
+## [0.0.32] - 2026-10-09
+
+### Added
+
+- **Model capability icons.** The existing Open WebUI model picker is now decorated with compact, accessible icons for capabilities such as reasoning, vision, coding, Tools, and image generation. Server metadata takes priority; conservative local-model recognition is only used when metadata is unavailable.
+
+### Changed
+
+- **One server control on mobile.** The duplicate top-right server settings shortcut was removed. The top-left server menu remains the single place to switch or manage saved Open WebUI servers, while refresh remains separate.
+
+## [0.0.31] - 2026-10-09
+
+### Fixed
+
+- **Reliable native Skill sync.** The desktop importer now accepts both direct and nested Open WebUI Workspace list responses (including `data.items`), preventing valid local Skills from being mistaken for an empty server list and keeping them available to companion clients.
+
+## [0.0.29] - 2026-10-07
+
+### Added
+
+- **Open WebUI Workspace Skills sync.** Desktop now imports the bundled and local Codex/Agents/Claude `SKILL.md` files into Open WebUI's native Workspace Skills API, so they appear in the built-in `$` picker instead of only existing in a local Codex directory.
+- **Draw Things directly from chat.** Desktop exposes a local `draw_image` tool that calls the Draw Things HTTP API on this computer or another device on the LAN, then returns the generated image to the active Open WebUI conversation.
+- **Project-aware image output.** Every generated image is saved under `generated-images` in the chat's selected project or isolated temporary workspace. When signed in, Desktop also uploads the image to the same Open WebUI account so it remains visible from other devices.
+- **Draw Things settings.** A dedicated settings page includes enable/disable controls, the API address, connection testing with explicit feedback, Mac auto-launch, and Windows-to-Mac LAN setup guidance.
+
+### Security
+
+- **Stable skill IDs.** Existing `lmlab-*` IDs are preserved for compatibility while their visible names drop the `lmlab` prefix. Skill sync is additive and does not replace or delete unrelated Workspace Skills.
+- **Loopback-only bridge.** The Desktop image bridge listens only on `127.0.0.1`, requires a per-launch bearer key for tool calls, validates image parameters, and serves fallback artifacts through opaque filenames.
+
+## [0.0.28] - 2026-10-07
+
+### Fixed
+
+- **New chats no longer inherit another chat's folder.** A project chosen before a chat exists is now a one-shot selection claimed only by that new chat. Existing chats without a saved project receive their own isolated workspace instead of falling back to another chat's pending folder.
+- **Safe temporary workspaces.** Starting without a project creates an isolated Desktop-managed folder for that chat. Choosing a permanent project later moves the generated files there without overwriting existing files; naming conflicts are preserved under a safe alternate name.
+- **Clear temporary state in the UI.** The project launcher, status bar, and workspace panel identify temporary workspaces and explain that choosing a project will move the files automatically.
+
+## [0.0.27] - 2026-10-07
+
+### Added
+
+- **Project launch home.** Desktop connections now open with a project-first start screen, including the selected folder, recent projects, workspace readiness, and an explicit chat-only option.
+- **Progress / Changes / Artifacts workspace.** A persistent right panel follows each project task from its automatic pre-change checkpoint through completion, then groups detected file changes and generated artifacts.
+- **Change review and one-click restore.** Text changes can be reviewed side by side in the built-in Canvas. A recoverable restore action returns protected files to their pre-task versions and moves newly created files into the checkpoint backup.
+- **Artifact Canvas.** Images, PDFs, HTML, and text artifacts can be previewed without leaving Desktop; Office and unsupported formats open in their installed Windows application.
+
+### Changed
+
+- **Desktop requests are checkpointed automatically.** When a project folder is active, Desktop captures a bounded local snapshot before sending the model request and scans the project again after the streamed response completes.
+
+## [0.0.26] - 2026-10-07
+
+### Fixed
+
+- **Desktop login state now stays synchronized.** The embedded Open WebUI securely relays token changes on page load, sign-in, sign-out, focus, and SPA navigation, while project actions also perform an immediate sync before registering local tools.
+- **Removed the false signed-out project error.** A delayed login-token relay no longer marks an otherwise working Desktop project folder as failed. Direct local file tools remain attached to each request while personal terminal registration retries after the token becomes available.
+- **Responses no longer look frozen before the first token.** When stock Open WebUI only shows a blinking caret, Desktop now presents a compact activity state with a truthful waiting message, elapsed time, and a longer-wait hint. Native search and tool statuses continue to take precedence.
+
+## [0.0.25] - 2026-10-07
+
+### Fixed
+
+- **Project folder works from the first message.** Selecting a project folder now starts Open Terminal with that folder as its root working directory before the embedded WebUI loads. The first request is prepared before it leaves Desktop, and its local file tools are restored even if Open WebUI's initial localhost discovery happened too early.
+- **Generated files default to the selected folder.** Desktop requests explicitly tell the model to create and verify artifacts in the chosen project folder without asking for another save location or falling back to browser-only instructions.
+- **Approval mode is enforced.** The control beside `＋` now also sets Open WebUI's native tool approval parameter (`要求核准` / `代我核准`) instead of relying only on an instruction message.
+
+## [0.0.24] - 2026-10-07
+
+### Changed
+
+- **Approval control beside `＋`.** `要求核准` and `代我核准` now live in their own compact control immediately beside the message composer’s `＋` button. The selected policy is included with model requests without changing the message you wrote.
+- **Native Skills restored.** Removed the Desktop slash picker and all desktop-specific Skills-folder scanning. Open WebUI’s own Skills and `/` behaviour are left untouched, so LMLab and future imported Skills remain independently selectable.
+
+## [0.0.23] - 2026-10-06
+
+### Added
+
+- **Imported Skills in Slash Picker.** The `/` picker now scans Codex, Agents, Open WebUI, LMLab, and user-selected folders for `SKILL.md` files every time it opens. Imported skills can be searched and inserted directly into the chat.
+- **Writing Mode Choice.** Choose `自動改檔` to instruct the model to apply project changes without pausing, or `先問我` to inspect first and request approval before a write.
+
+## [0.0.22] - 2026-10-06
+
+### Added
+
+- **Desktop Skills.** Type `/` in the Open WebUI message box to choose `/fix`, `/implement`, `/review`, or `/test`. `/fix` and `/implement` instruct the model to modify the selected project through the available tools and report the files and verification actually completed.
+
+## [0.0.21] - 2026-10-06
+
+### Added
+
+- **Choose Project Before Chat.** Select a Windows project folder from the Desktop status bar before creating a conversation. The next new chat receives that folder automatically, while existing chats keep their own project selection.
+
+### Changed
+
+- **Reliable Windows x64 Packages.** Windows installer and portable builds now use the bundled Node-API terminal binaries, allowing them to be packaged from macOS without rebuilding native code.
+
 ## [0.0.20] - 2026-05-07
 
 ### Fixed

@@ -17,9 +17,11 @@
     projectControlsVisible: boolean
     activeChatId: string
     projectFolder: string | null
+    projectTemporary: boolean
     projectBusy: boolean
     projectMessage: string
     projectError: string
+    workspacePanelOpen: boolean
     onSelectLog: (log: string) => void
     onStartServer: () => void
     onToggleOpenTerminal: () => void
@@ -27,6 +29,8 @@
     onChooseProjectFolder: () => void
     onClearProjectFolder: () => void
     onOpenProjectFolder: () => void
+    onOpenProjectLauncher: () => void
+    onToggleWorkspacePanel: () => void
   }
 
   let {
@@ -41,16 +45,20 @@
     projectControlsVisible,
     activeChatId,
     projectFolder,
+    projectTemporary,
     projectBusy,
     projectMessage,
     projectError,
+    workspacePanelOpen,
     onSelectLog,
     onStartServer,
     onToggleOpenTerminal,
     onToggleLlamaCpp,
     onChooseProjectFolder,
     onClearProjectFolder,
-    onOpenProjectFolder
+    onOpenProjectFolder,
+    onOpenProjectLauncher,
+    onToggleWorkspacePanel
   }: Props = $props()
 
   // Derived server state
@@ -214,17 +222,24 @@
 
     <div class="flex items-center min-w-0" aria-busy={projectBusy}>
       <button
-        class="group flex min-w-0 items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] transition-all border-none text-[#1d1d1f] dark:text-[#fafafa] {activeChatId
-          ? 'cursor-pointer bg-black/[0.035] hover:bg-black/[0.07] dark:bg-white/[0.045] dark:hover:bg-white/[0.09] opacity-70 hover:opacity-100'
-          : 'cursor-default bg-transparent opacity-30'}"
-        disabled={!activeChatId || projectBusy}
+        class="group flex min-w-0 items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] transition-all border-none text-[#1d1d1f] dark:text-[#fafafa] {projectBusy
+          ? 'cursor-wait bg-transparent opacity-45'
+          : 'cursor-pointer bg-black/[0.035] hover:bg-black/[0.07] dark:bg-white/[0.045] dark:hover:bg-white/[0.09] opacity-70 hover:opacity-100'}"
+        disabled={projectBusy}
         onclick={onChooseProjectFolder}
         aria-label={projectFolder
-          ? $i18n.t('statusBar.changeProjectFolder', { folder: projectFolderName })
-          : $i18n.t('statusBar.chooseProjectFolder')}
-        use:tooltip={!activeChatId
-          ? $i18n.t('statusBar.openChatForProject')
-          : projectFolder || $i18n.t('statusBar.chooseProjectFolder')}
+          ? projectTemporary
+            ? $i18n.t('statusBar.choosePermanentProjectFolder')
+            : $i18n.t('statusBar.changeProjectFolder', { folder: projectFolderName })
+          : activeChatId
+            ? $i18n.t('statusBar.chooseProjectFolder')
+            : $i18n.t('statusBar.chooseProjectForNewChat')}
+        use:tooltip={projectTemporary
+          ? $i18n.t('statusBar.temporaryWorkspaceHint')
+          : projectFolder ||
+            (activeChatId
+              ? $i18n.t('statusBar.chooseProjectFolder')
+              : $i18n.t('statusBar.chooseProjectForNewChat'))}
       >
         {#if projectBusy}
           <div
@@ -247,17 +262,19 @@
           </svg>
         {/if}
         <span class="max-w-[160px] truncate">
-          {#if !activeChatId}
-            {$i18n.t('statusBar.project')}
-          {:else if projectFolder}
-            {projectFolderName}
+          {#if projectFolder}
+            {projectTemporary
+              ? $i18n.t('statusBar.temporaryWorkspace')
+              : activeChatId
+                ? projectFolderName
+                : `${$i18n.t('statusBar.nextProject')}: ${projectFolderName}`}
           {:else}
             {$i18n.t('statusBar.chooseProject')}
           {/if}
         </span>
       </button>
 
-      {#if projectFolder && activeChatId && !projectBusy}
+      {#if projectFolder && !projectBusy}
         <button
           class="ml-0.5 flex items-center justify-center w-6 h-6 rounded-md bg-transparent border-none cursor-pointer opacity-35 hover:opacity-80 hover:bg-black/[0.05] dark:hover:bg-white/[0.06] text-[#1d1d1f] dark:text-[#fafafa] transition"
           onclick={onOpenProjectFolder}
@@ -279,23 +296,25 @@
             />
           </svg>
         </button>
-        <button
-          class="flex items-center justify-center w-6 h-6 rounded-md bg-transparent border-none cursor-pointer opacity-30 hover:opacity-75 hover:bg-black/[0.05] dark:hover:bg-white/[0.06] text-[#1d1d1f] dark:text-[#fafafa] transition"
-          onclick={onClearProjectFolder}
-          aria-label={$i18n.t('statusBar.clearProjectFolder')}
-          use:tooltip={$i18n.t('statusBar.clearProjectFolder')}
-        >
-          <svg
-            class="w-3 h-3"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="1.5"
-            aria-hidden="true"
+        {#if !projectTemporary}
+          <button
+            class="flex items-center justify-center w-6 h-6 rounded-md bg-transparent border-none cursor-pointer opacity-30 hover:opacity-75 hover:bg-black/[0.05] dark:hover:bg-white/[0.06] text-[#1d1d1f] dark:text-[#fafafa] transition"
+            onclick={onClearProjectFolder}
+            aria-label={$i18n.t('statusBar.clearProjectFolder')}
+            use:tooltip={$i18n.t('statusBar.clearProjectFolder')}
           >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+            <svg
+              class="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        {/if}
       {/if}
     </div>
 
@@ -314,6 +333,55 @@
     {projectError || projectMessage}
   </span>
 
-  <!-- Version (right-aligned) -->
-  <span class="ml-auto text-[10px] opacity-25 select-none">v{$appInfo?.version ?? ''}</span>
+  <div class="ml-auto flex items-center gap-1">
+    {#if projectControlsVisible}
+      <button
+        class="flex h-6 cursor-pointer items-center gap-1.5 rounded-md border-none bg-transparent px-2 text-[10px] text-inherit opacity-45 transition hover:bg-black/[0.05] hover:opacity-85 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/[0.07]"
+        onclick={onOpenProjectLauncher}
+        aria-label={$i18n.t('statusBar.projectHome')}
+        use:tooltip={$i18n.t('statusBar.projectHome')}
+      >
+        <svg
+          class="h-3 w-3"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 6.75A2.25 2.25 0 0 1 6 4.5h3.879c.398 0 .779.158 1.06.44l1.122 1.12c.281.282.663.44 1.061.44H18a2.25 2.25 0 0 1 2.25 2.25v7.5A2.25 2.25 0 0 1 18 18.5H6a2.25 2.25 0 0 1-2.25-2.25v-9.5Z"
+          />
+        </svg>
+        <span class="hidden xl:inline">{$i18n.t('statusBar.projectHome')}</span>
+      </button>
+
+      <button
+        class="flex h-6 cursor-pointer items-center gap-1.5 rounded-md border-none px-2 text-[10px] text-inherit transition focus-visible:outline-2 focus-visible:outline-blue-500 {workspacePanelOpen
+          ? 'bg-black/[0.07] opacity-80 dark:bg-white/[0.09]'
+          : 'bg-transparent opacity-45 hover:bg-black/[0.05] hover:opacity-85 dark:hover:bg-white/[0.07]'}"
+        onclick={onToggleWorkspacePanel}
+        aria-pressed={workspacePanelOpen}
+        aria-label={$i18n.t('statusBar.workspace')}
+        use:tooltip={$i18n.t('statusBar.workspace')}
+      >
+        <svg
+          class="h-3 w-3"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          <rect x="3.75" y="4.75" width="16.5" height="14.5" rx="2" />
+          <path d="M14.25 5v14" />
+        </svg>
+        <span class="hidden xl:inline">{$i18n.t('statusBar.workspace')}</span>
+      </button>
+    {/if}
+
+    <span class="ml-1 select-none text-[10px] opacity-25">v{$appInfo?.version ?? ''}</span>
+  </div>
 </div>

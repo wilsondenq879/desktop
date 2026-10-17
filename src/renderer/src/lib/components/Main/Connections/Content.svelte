@@ -33,6 +33,7 @@
     onAddConnection: () => void
     onSetView: (v: string) => void
     onNavigationChange: (connectionId: string, url: string) => void
+    onProjectRequest: (connectionId: string) => void
     showAddConnectionModal: boolean
   }
 
@@ -57,6 +58,7 @@
     onAddConnection,
     onSetView,
     onNavigationChange,
+    onProjectRequest,
     showAddConnectionModal = $bindable(false)
   }: Props = $props()
 
@@ -80,6 +82,8 @@
 
   // Content preload path for webview bridge
   let contentPreloadPath: string = $state('')
+  const drawThingsRegistrationReloads = new Set<string>()
+  const skillSyncReloads = new Set<string>()
 
   // Server is starting up (local)
   const serverStarting = $derived(
@@ -120,6 +124,20 @@
     }
   }
 
+  const syncAuthTokenFromWebview = async (wv: any, connId: string) => {
+    if (!wv?.executeJavaScript || !connId) return
+    try {
+      const token = await wv.executeJavaScript(`localStorage.getItem('token') || ''`)
+      await window.electronAPI.setAuthToken?.(
+        typeof token === 'string' ? token : '',
+        connId,
+        openConnections.get(connId) ?? ''
+      )
+    } catch {
+      // The guest can be between navigations. Its preload retries after load.
+    }
+  }
+
   // Attach load event listeners and IPC forwarding to webviews
   onMount(async () => {
     // Fetch the content preload path once
@@ -150,6 +168,7 @@
         wv.addEventListener('did-stop-loading', () => {
           webviewLoading.set(connId, false)
           webviewLoading = new Map(webviewLoading)
+          void syncAuthTokenFromWebview(wv, connId)
         })
 
         // Track load failures so we can show an error overlay
@@ -176,9 +195,13 @@
         // Open WebUI is a SPA, so chat changes usually happen without a full navigation.
         wv.addEventListener('did-navigate-in-page', (event: any) => {
           notifyNavigation(event?.url)
+          void syncAuthTokenFromWebview(wv, connId)
         })
 
-        wv.addEventListener('dom-ready', () => notifyNavigation())
+        wv.addEventListener('dom-ready', () => {
+          notifyNavigation()
+          void syncAuthTokenFromWebview(wv, connId)
+        })
 
         // Renderer process crash
         wv.addEventListener('crashed', () => {
@@ -213,13 +236,58 @@
             if (!requestData) return
 
             // Handle auth token relay from webview
-            if (requestData.type === 'token:update' && requestData.token) {
-              window.electronAPI.setAuthToken?.(requestData.token, connId)
+            if (requestData.type === 'token:update') {
+              const result = await window.electronAPI.setAuthToken?.(
+                requestData.token ?? '',
+                connId,
+                openConnections.get(connId) ?? ''
+              )
+              // Open WebUI keeps its native Skills list in a client-side
+              // store. Refresh once after an import so the new items appear
+              // in the built-in `$` picker without adding another overlay.
+              if (result?.skillsSync?.changed && !skillSyncReloads.has(connId) && wv?.reload) {
+                skillSyncReloads.add(connId)
+                window.setTimeout(() => {
+                  wv.reload()
+                  window.setTimeout(() => skillSyncReloads.delete(connId), 5000)
+                }, 150)
+              }
+              if (
+                result?.drawThingsConnectionChanged &&
+                !drawThingsRegistrationReloads.has(connId)
+              ) {
+                drawThingsRegistrationReloads.add(connId)
+                window.setTimeout(() => {
+                  if (wv?.reload) wv.reload()
+                  window.setTimeout(() => drawThingsRegistrationReloads.delete(connId), 3000)
+                }, 100)
+              }
               return
             }
 
             try {
-              const response = await window.electronAPI[requestData.type]?.(requestData)
+              let response: any
+              if (requestData.type === 'desktop-project:prepare') {
+                await syncAuthTokenFromWebview(wv, connId)
+                if (!requestData.chatId) onProjectRequest(connId)
+                response = await window.electronAPI.prepareOpenTerminalProjectForChat({
+                  connectionId: connId,
+                  chatId: requestData.chatId || undefined,
+                  connectionUrl: openConnections.get(connId) ?? ''
+                })
+              } else if (requestData.type === 'desktop-workspace:task-start') {
+                response = await window.electronAPI.startWorkspaceTask({
+                  connectionId: connId,
+                  chatId: requestData.chatId || undefined
+                })
+              } else if (requestData.type === 'desktop-workspace:task-finish') {
+                response = await window.electronAPI.finishWorkspaceTask({
+                  checkpointId: requestData.checkpointId,
+                  error: requestData.error
+                })
+              } else {
+                response = await window.electronAPI[requestData.type]?.(requestData)
+              }
               if (requestData._requestId) {
                 wv.send('desktop:response', {
                   _responseId: requestData._requestId,
@@ -228,6 +296,12 @@
               }
             } catch (e) {
               console.error('webview:send handler error:', e)
+              if (requestData._requestId) {
+                wv.send('desktop:response', {
+                  _responseId: requestData._requestId,
+                  data: { error: e instanceof Error ? e.message : String(e) }
+                })
+              }
             }
           } else if (event.channel === 'webview:load') {
             const page = event.args?.[0]

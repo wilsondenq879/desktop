@@ -1,0 +1,739 @@
+{
+  "version": 1,
+  "description": "樣板程式碼重用，模型只填資料；範例數值全為示意。",
+  "templates": [
+    {
+      "id": "bar",
+      "description": "同單位類別大小，零基準；柱形／長條比較。",
+      "payload": {
+        "title": "落地 AI 推論速度（示意）",
+        "unit": "tokens/s",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "bar",
+        "labels": [
+          "配置 A",
+          "配置 B",
+          "配置 C"
+        ],
+        "series": [
+          {
+            "name": "推論速度",
+            "values": [
+              42,
+              58,
+              73
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "horizontal_bar",
+      "description": "長名稱與多項比較，橫向閱讀。",
+      "payload": {
+        "title": "工作站方案功耗（示意）",
+        "unit": "W",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "lower",
+        "chart_type": "horizontal_bar",
+        "labels": [
+          "單機小型工作站",
+          "雙節點小型工作站",
+          "四節點協同配置"
+        ],
+        "series": [
+          {
+            "name": "功耗",
+            "values": [
+              65,
+              130,
+              260
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "grouped_bar",
+      "description": "相同類別中的多組數據，保留個別數值。",
+      "payload": {
+        "title": "不同工作負載的延遲（示意）",
+        "unit": "ms",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "lower",
+        "chart_type": "bar",
+        "labels": [
+          "輕量",
+          "一般",
+          "高負載"
+        ],
+        "series": [
+          {
+            "name": "配置 A",
+            "values": [
+              4,
+              8,
+              15
+            ]
+          },
+          {
+            "name": "配置 B",
+            "values": [
+              3,
+              6,
+              11
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "tornado",
+      "description": "兩組對應數據左右鏡像；相同尺度，不當負數。",
+      "payload": {
+        "title": "A/B 方案用戶結構（示意）",
+        "unit": "人",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "tornado",
+        "labels": [
+          "研究分析",
+          "模型開發",
+          "內容製作",
+          "網路維運"
+        ],
+        "series": [
+          {
+            "name": "方案 A",
+            "values": [
+              30,
+              45,
+              25,
+              35
+            ]
+          },
+          {
+            "name": "方案 B",
+            "values": [
+              40,
+              32,
+              48,
+              28
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "radar",
+      "description": "共同量尺的多維比較；3–8 軸，不捏造評分。",
+      "payload": {
+        "title": "方案多面向能力（示意）",
+        "unit": "分",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "虛構且已使用共同 0–100 量尺的樣式示範，不是實際產品評分。",
+        "better": "neutral",
+        "chart_type": "radar",
+        "labels": [
+          "推論",
+          "連線",
+          "擴充",
+          "節能",
+          "維護"
+        ],
+        "series": [
+          {
+            "name": "方案 A",
+            "values": [
+              80,
+              70,
+              60,
+              85,
+              75
+            ]
+          },
+          {
+            "name": "方案 B",
+            "values": [
+              70,
+              85,
+              90,
+              60,
+              80
+            ]
+          }
+        ],
+        "options": {
+          "max": 100
+        }
+      }
+    },
+    {
+      "id": "gauge",
+      "description": "單一指標、量尺上下限及目標；不是時間趨勢。",
+      "payload": {
+        "title": "研究任務達成率（示意）",
+        "unit": "%",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "gauge",
+        "labels": [
+          "本週研究完成率"
+        ],
+        "series": [
+          {
+            "name": "完成率",
+            "values": [
+              72
+            ]
+          }
+        ],
+        "options": {
+          "min": 0,
+          "max": 100,
+          "target": 85
+        }
+      }
+    },
+    {
+      "id": "line",
+      "description": "依資料順序呈現趨勢，不擅自重排。",
+      "payload": {
+        "title": "每季流量變化（示意）",
+        "unit": "TB",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "line",
+        "labels": [
+          "Q1",
+          "Q2",
+          "Q3",
+          "Q4"
+        ],
+        "series": [
+          {
+            "name": "資料流量",
+            "values": [
+              12,
+              18,
+              16,
+              25
+            ]
+          },
+          {
+            "name": "控制流量",
+            "values": [
+              4,
+              6,
+              7,
+              9
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "area",
+      "description": "折線下方填色，強調數量變化；多組非堆疊。",
+      "payload": {
+        "title": "每日資料處理量（示意）",
+        "unit": "GB",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "area",
+        "labels": [
+          "週一",
+          "週二",
+          "週三",
+          "週四",
+          "週五"
+        ],
+        "series": [
+          {
+            "name": "已處理資料",
+            "values": [
+              20,
+              35,
+              28,
+              48,
+              62
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "waterfall",
+      "description": "期初、增減與期末；自動累計、驗證總額。",
+      "payload": {
+        "title": "專案預算增減（示意）",
+        "unit": "萬元",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "waterfall",
+        "labels": [
+          "期初",
+          "設備新增",
+          "折扣",
+          "軟體",
+          "期末"
+        ],
+        "series": [
+          {
+            "name": "金額",
+            "values": [
+              100,
+              35,
+              -12,
+              7,
+              130
+            ]
+          }
+        ],
+        "options": {
+          "roles": [
+            "total",
+            "change",
+            "change",
+            "change",
+            "total"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pie",
+      "description": "少量分類的組成；分母為圖中所列合計。",
+      "payload": {
+        "title": "樣本用途組成（示意）",
+        "unit": "件",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "pie",
+        "labels": [
+          "研究",
+          "開發",
+          "維運",
+          "內容"
+        ],
+        "series": [
+          {
+            "name": "樣本數",
+            "values": [
+              42,
+              28,
+              18,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "doughnut",
+      "description": "組成與合計，內圈顯示總額。",
+      "payload": {
+        "title": "儲存空間分配（示意）",
+        "unit": "TB",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "doughnut",
+        "labels": [
+          "模型權重",
+          "研究資料",
+          "成品輸出",
+          "其他"
+        ],
+        "series": [
+          {
+            "name": "空間",
+            "values": [
+              40,
+              30,
+              20,
+              10
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "stacked_column",
+      "description": "同時比較絕對總量與組成。",
+      "payload": {
+        "title": "不同部門用量與結構（示意）",
+        "unit": "TB",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "stacked_column",
+        "labels": [
+          "研究組",
+          "開發組",
+          "維運組"
+        ],
+        "series": [
+          {
+            "name": "模型",
+            "values": [
+              30,
+              40,
+              15
+            ]
+          },
+          {
+            "name": "資料",
+            "values": [
+              20,
+              35,
+              10
+            ]
+          },
+          {
+            "name": "輸出",
+            "values": [
+              10,
+              15,
+              5
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "percent_stacked_column",
+      "description": "各組正規化為 100%，比較組成而非總量。",
+      "payload": {
+        "title": "不同部門用量佔比（示意）",
+        "unit": "TB",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "percent_stacked_column",
+        "labels": [
+          "研究組",
+          "開發組",
+          "維運組"
+        ],
+        "series": [
+          {
+            "name": "模型",
+            "values": [
+              30,
+              40,
+              15
+            ]
+          },
+          {
+            "name": "資料",
+            "values": [
+              20,
+              35,
+              10
+            ]
+          },
+          {
+            "name": "輸出",
+            "values": [
+              10,
+              15,
+              5
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "treemap",
+      "description": "葉節點權重與父層路徑；面積正比權重。",
+      "payload": {
+        "title": "落地 AI 專案成本結構（示意）",
+        "unit": "萬元",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "treemap",
+        "labels": [
+          "GPU",
+          "CPU",
+          "儲存",
+          "交換器",
+          "網卡",
+          "工具",
+          "管理"
+        ],
+        "series": [
+          {
+            "name": "成本",
+            "values": [
+              40,
+              18,
+              14,
+              10,
+              6,
+              8,
+              4
+            ]
+          }
+        ],
+        "options": {
+          "parents": [
+            "硬體/運算",
+            "硬體/運算",
+            "硬體/資料",
+            "硬體/網路",
+            "硬體/網路",
+            "軟體",
+            "軟體"
+          ]
+        }
+      }
+    },
+    {
+      "id": "scatter",
+      "description": "兩個連續變數；分軸單位，沒有自動因果推論。",
+      "payload": {
+        "title": "功耗與推論速度（示意）",
+        "unit": "分軸標示",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "scatter",
+        "labels": [
+          "配置 A",
+          "配置 B",
+          "配置 C",
+          "配置 D",
+          "配置 E"
+        ],
+        "series": [
+          {
+            "name": "功耗",
+            "values": [
+              65,
+              95,
+              125,
+              165,
+              210
+            ]
+          },
+          {
+            "name": "推論速度",
+            "values": [
+              20,
+              42,
+              39,
+              62,
+              68
+            ]
+          }
+        ],
+        "options": {
+          "x_unit": "W",
+          "y_unit": "tokens/s"
+        }
+      }
+    },
+    {
+      "id": "bubble",
+      "description": "X/Y 加第三個量；氣泡面積正比第三量。",
+      "payload": {
+        "title": "功耗、推論速度與採購預算（示意）",
+        "unit": "分軸標示",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "bubble",
+        "labels": [
+          "配置 A",
+          "配置 B",
+          "配置 C",
+          "配置 D"
+        ],
+        "series": [
+          {
+            "name": "功耗",
+            "values": [
+              65,
+              100,
+              145,
+              210
+            ]
+          },
+          {
+            "name": "推論速度",
+            "values": [
+              24,
+              42,
+              55,
+              70
+            ]
+          },
+          {
+            "name": "預算",
+            "values": [
+              4,
+              6,
+              9,
+              14
+            ]
+          }
+        ],
+        "options": {
+          "x_unit": "W",
+          "y_unit": "tokens/s",
+          "size_unit": "萬元"
+        }
+      }
+    },
+    {
+      "id": "gantt",
+      "description": "日期區間、計畫與執行、已知完成率；未知進度不填零。",
+      "payload": {
+        "title": "小型 AI Demo 專案時程（示意）",
+        "unit": "日",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "gantt",
+        "labels": [
+          "需求確認",
+          "環境建置",
+          "功能開發",
+          "驗證展示"
+        ],
+        "series": [],
+        "options": {
+          "tasks": [
+            {
+              "start": "2026-10-01",
+              "end": "2026-10-03",
+              "planned_start": "2026-10-01",
+              "planned_end": "2026-10-03",
+              "progress": 100
+            },
+            {
+              "start": "2026-10-03",
+              "end": "2026-10-07",
+              "planned_start": "2026-10-03",
+              "planned_end": "2026-10-06",
+              "progress": 100
+            },
+            {
+              "start": "2026-10-06",
+              "end": "2026-10-13",
+              "planned_start": "2026-10-06",
+              "planned_end": "2026-10-12",
+              "progress": 70
+            },
+            {
+              "start": "2026-10-13",
+              "end": "2026-10-16",
+              "planned_start": "2026-10-12",
+              "planned_end": "2026-10-15"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "funnel",
+      "description": "同母體、遞減階段的留存與轉換率；寬度正比數量。",
+      "payload": {
+        "title": "產品 Demo 轉換流程（示意）",
+        "unit": "人",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "純樣板示範資料，不是品牌評分、市佔調查或設備實測。",
+        "better": "neutral",
+        "chart_type": "funnel",
+        "labels": [
+          "接觸",
+          "有興趣",
+          "完成 Demo",
+          "啟動試用",
+          "正式採用"
+        ],
+        "series": [
+          {
+            "name": "人數",
+            "values": [
+              1000,
+              620,
+              380,
+              200,
+              120
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "quadrant",
+      "description": "0–1 定性相對位置，不能冒充市佔或市場調查。",
+      "payload": {
+        "title": "方案相對定位（示意）",
+        "unit": "相對位置",
+        "data_kind": "illustrative",
+        "sources": [],
+        "note": "模型定性示意，非市佔率、實際評分或市場調查。",
+        "better": "neutral",
+        "chart_type": "quadrant",
+        "labels": [
+          "方案 A",
+          "方案 B",
+          "方案 C",
+          "方案 D"
+        ],
+        "series": [
+          {
+            "name": "成本低至高",
+            "values": [
+              0.2,
+              0.65,
+              0.8,
+              0.4
+            ]
+          },
+          {
+            "name": "能力少至多",
+            "values": [
+              0.3,
+              0.6,
+              0.9,
+              0.75
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
